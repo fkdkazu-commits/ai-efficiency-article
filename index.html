@@ -406,6 +406,68 @@
 
   <hr>
 
+  <!-- セキュリティ対策セクション -->
+  <div class="section" id="security">
+    <div class="section-header">
+      <span class="section-num">🔐</span>
+      <h2>AIツールを自作するなら必須のセキュリティ対策</h2>
+    </div>
+    <p class="section-sub">〜 同じものを作る方へ。自分が踏んだ落とし穴と対策をまとめました 〜</p>
+
+    <p>これらのツールを実際に運用するなかで、<strong>セキュリティ面でいくつかの落とし穴</strong>がありました。同じものを作る方に向けて、必須の対策をまとめます。</p>
+
+    <div class="flow-code">
+      ⚠️ よくある失敗パターン<br>
+      APIキーをコードに直書き → Gitにpush → GitHubで全公開 😱<br>
+      ローカルサーバーを認証なしで起動 → 同じWi-Fiの端末から操作される<br>
+      .envファイルをフォルダごと共有 → APIキーが相手に渡る
+    </div>
+
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">① APIキーは必ず .env ファイルで管理する</h3>
+    <p>Notion・Claude API・LINEなど、外部サービスのAPIキーは<strong>絶対にソースコードに直書きしない</strong>こと。<code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.env</code> ファイルに分離して管理しましょう。</p>
+    <ul>
+      <li><code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.gitignore</code> に <code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.env</code> を追加して、Gitに含めない</li>
+      <li>複数ツールで同じAPIキーを使う場合は、共通の場所に一元化する（例：ホームディレクトリの隠しフォルダ）</li>
+      <li>フォルダを誰かと共有する際、<code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.env</code> が含まれていないか必ず確認する</li>
+    </ul>
+
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">② ローカルサーバーは 127.0.0.1 にバインドする</h3>
+    <p>Node.jsなどでローカルサーバーを立てる場合、デフォルトではLAN内の他端末からもアクセスできる状態になっています。<strong>カフェや職場のWi-Fiでは特に注意が必要です。</strong></p>
+    <div class="flow-code">
+      // ❌ デフォルト（全インターフェースで待ち受け）<br>
+      server.listen(3456)<br><br>
+      // ✅ ローカルのみ（外部から接続不可）<br>
+      server.listen(3456, '127.0.0.1')
+    </div>
+    <p>たった1行の違いですが、これだけで外部からのアクセスをOSレベルで遮断できます。</p>
+
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">③ 操作画面には認証を付ける</h3>
+    <p>ダッシュボードのような「ツールを起動・操作できる画面」は、<strong>パスワード認証を必ず追加</strong>しましょう。Basic認証でも、何もない状態よりはるかに安全です。</p>
+    <ul>
+      <li>Node.jsなら <code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">WWW-Authenticate: Basic</code> ヘッダーで実装可能</li>
+      <li>認証情報も <code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.env</code> で管理し、コードに直書きしない</li>
+    </ul>
+
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">④ 依存パッケージの脆弱性を定期チェック</h3>
+    <p>使用しているライブラリに既知の脆弱性が発見されることがあります。月1回程度、以下のコマンドを実行するだけで確認できます。</p>
+    <div class="flow-code">
+      # Node.js の場合<br>
+      npm audit<br><br>
+      # Python の場合（pip-audit をインストール済みなら）<br>
+      pip-audit
+    </div>
+
+    <div style="background:#FFF8E1; border-left:4px solid #F59E0B; border-radius:4px; padding:16px 20px; margin:24px 0;">
+      <p style="margin:0; font-size:14px; color:#78350F;">
+        <strong>💡 まとめ：最低限やっておくこと</strong><br>
+        ① APIキーは <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">.env</code> に分離してGitに含めない　② サーバーは <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">127.0.0.1</code> バインド　③ 操作画面に認証を追加　④ <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">npm audit</code> を定期実施<br>
+        この4つを抑えるだけで、個人開発レベルのリスクはほぼカバーできます。
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
   <p style="font-size:15px; font-weight:bold;">次回は各ツールの<strong>詳細な作り方・プロンプトの工夫</strong>についても紹介予定です。気になる方はフォローしていただけると嬉しいです！</p>
 
   <div class="tags">
