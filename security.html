@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セキュリティ対策レポート | AI自動化ツール群</title>
+  <style>
+    :root {
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --green-light: #dcfce7;
+      --yellow: #eab308;
+      --yellow-light: #fef9c3;
+      --red: #ef4444;
+      --red-light: #fee2e2;
+      --gray: #6b7280;
+      --gray-light: #f3f4f6;
+      --dark: #111827;
+      --card-border: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2942 100%);
+      border-bottom: 1px solid #1e3a5f;
+      padding: 48px 24px 40px;
+      text-align: center;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+
+    .shield-icon {
+      font-size: 14px;
+    }
+
+    header h1 {
+      font-size: clamp(24px, 5vw, 40px);
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    header h1 span {
+      color: #4ade80;
+    }
+
+    header p {
+      font-size: 16px;
+      color: #94a3b8;
+      max-width: 560px;
+      margin: 0 auto 24px;
+      line-height: 1.7;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .meta-item strong { color: #94a3b8; }
+
+    /* スコアカード */
+    .score-section {
+      max-width: 960px;
+      margin: -20px auto 0;
+      padding: 0 24px 32px;
+    }
+
+    .score-card {
+      background: linear-gradient(135deg, #064e3b, #065f46);
+      border: 1px solid #059669;
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .score-number {
+      font-size: 72px;
+      font-weight: 900;
+      color: #4ade80;
+      line-height: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 11px;
+      color: #6ee7b7;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    .score-details {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .score-details h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ecfdf5;
+      margin-bottom: 8px;
+    }
+
+    .score-details p {
+      font-size: 14px;
+      color: #6ee7b7;
+      line-height: 1.6;
+    }
+
+    .score-items {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 180px;
+    }
+
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #a7f3d0;
+    }
+
+    .check { color: #4ade80; font-size: 16px; }
+
+    /* メインコンテンツ */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 48px 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1e293b;
+    }
+
+    /* 対策カード */
+    .measures-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .measure-card {
+      background: #1e293b;
+      border: 1px solid #2d3f55;
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .measure-card:hover {
+      border-color: #4ade80;
+    }
+
+    .measure-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .measure-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .icon-green { background: rgba(34, 197, 94, 0.15); }
+    .icon-blue  { background: rgba(59, 130, 246, 0.15); }
+    .icon-purple{ background: rgba(168, 85, 247, 0.15); }
+    .icon-orange{ background: rgba(249, 115, 22, 0.15); }
+
+    .measure-title-area h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 4px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .status-done {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .status-pending {
+      background: rgba(234, 179, 8, 0.15);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.3);
+    }
+
+    .measure-body {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.8;
+    }
+
+    .measure-body p { margin-bottom: 12px; }
+    .measure-body p:last-child { margin-bottom: 0; }
+
+    .measure-detail {
+      background: #0f172a;
+      border: 1px solid #2d3f55;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+
+    .measure-detail-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .measure-detail ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .measure-detail li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .measure-detail li::before {
+      content: '→';
+      color: #4ade80;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    code {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      color: #7dd3fc;
+    }
+
+    /* 比較表 */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .compare-table th {
+      background: #0f172a;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d3f55;
+    }
+
+    .compare-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+      color: #94a3b8;
+      vertical-align: top;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .compare-table .before { color: #f87171; }
+    .compare-table .after  { color: #4ade80; }
+
+    /* 残課題セクション */
+    .todo-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .todo-item {
+      background: #1e293b;
+      border: 1px solid #2d3f55;
+      border-left: 3px solid #eab308;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .todo-item h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fef08a;
+      margin-bottom: 6px;
+    }
+
+    .todo-item p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+
+    /* フッター */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      border-top: 1px solid #1e293b;
+      color: #334155;
+      font-size: 13px;
+    }
+
+    footer a { color: #4ade80; text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .score-card { flex-direction: column; text-align: center; }
+      .score-number { font-size: 56px; }
+      .measure-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <div class="header-badge">
+    <span class="shield-icon">🛡</span>
+    Security Report
+  </div>
+  <h1>AI自動化ツール群<br><span>セキュリティ対策レポート</span></h1>
+  <p>個人開発のAI業務効率化ツール（ダッシュボード・求人検索・SNS自動生成・Gmail通知）に実施したセキュリティ対策の記録</p>
+  <div class="meta-row">
+    <div class="meta-item">📅 <strong>実施日：</strong>2026年4月</div>
+    <div class="meta-item">🖥 <strong>環境：</strong>Windows 11 Home / Node.js / Python</div>
+    <div class="meta-item">👤 <strong>対象：</strong>ローカル運用ツール群</div>
+  </div>
+</header>
+
+<!-- スコアカード -->
+<div class="score-section">
+  <div class="score-card">
+    <div>
+      <div class="score-number">A</div>
+      <div class="score-label">Overall</div>
+    </div>
+    <div class="score-details">
+      <h2>主要な脆弱性はすべて対処済み</h2>
+      <p>APIキー漏洩・不正アクセス・外部ネットワーク露出の3大リスクに対し、具体的な対策を実施。残課題は定期メンテナンス寄りの内容のみ。</p>
+    </div>
+    <div class="score-items">
+      <div class="score-item"><span class="check">✓</span> APIキー一元管理</div>
+      <div class="score-item"><span class="check">✓</span> ダッシュボード認証</div>
+      <div class="score-item"><span class="check">✓</span> CORS制限</div>
+      <div class="score-item"><span class="check">✓</span> 外部アクセス遮断</div>
+      <div class="score-item"><span class="check">✓</span> ファイル権限設定</div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- 実施済み対策 -->
+  <h2 class="section-title">✅ 実施済みセキュリティ対策</h2>
+  <div class="measures-grid">
+
+    <!-- 対策1: APIキー一元管理 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-green">🔑</div>
+        <div class="measure-title-area">
+          <h3>APIキーの一元管理・分離</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          Notion・Claude API・LINE Messaging APIのトークンが各プロジェクトフォルダの
+          <code>.env</code>ファイルに分散・平文保存されていた状態を改善。
+          共通APIキーを単一の安全な場所に集約しました。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施内容</div>
+          <ul>
+            <li>ホームディレクトリ直下に <code>.secrets/.env</code> を作成し、共通キーを集約</li>
+            <li>各プロジェクトの <code>.env</code> はDB IDなどプロジェクト固有値のみに限定</li>
+            <li>Pythonスクリプト3本・Node.jsサーバーのenv読み込み処理を更新（共通→プロジェクト固有の優先順位）</li>
+            <li><code>.secrets</code> フォルダをWindowsの隠しフォルダに設定</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">効果</div>
+          <ul>
+            <li>プロジェクトフォルダを第三者と共有・コピーしてもAPIキーが漏洩しない</li>
+            <li>キーの棚卸し・ローテーションが1か所で完結する</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対策2: ファイル権限 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-blue">🔒</div>
+        <div class="measure-title-area">
+          <h3>シークレットファイルのアクセス権限制限</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          <code>.secrets</code> フォルダのWindowsアクセス権限を自分のユーザーアカウントのみに制限。
+          他のユーザーアカウントや一般的なプロセスからの読み取りを防止します。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施内容</div>
+          <ul>
+            <li><code>icacls</code> コマンドで <code>fkdka</code> ユーザーのみフルコントロールに設定</li>
+            <li><code>attrib +h</code> で隠し属性を付与（エクスプローラーから見えない）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対策3: ダッシュボード認証 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-purple">🔐</div>
+        <div class="measure-title-area">
+          <h3>ダッシュボードへのBasic認証追加</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          <code>localhost:3456</code> で動作するダッシュボードが認証なしで操作できた問題を修正。
+          ブラウザの標準的なBasic認証ダイアログで保護します。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施内容</div>
+          <ul>
+            <li><code>server.js</code> に <code>checkAuth()</code> 関数を実装</li>
+            <li>認証情報は <code>.secrets/.env</code> の <code>DASHBOARD_USER</code> / <code>DASHBOARD_PASS</code> で管理</li>
+            <li>認証失敗時は <code>401 Unauthorized</code> を返し、ブラウザが認証ダイアログを表示</li>
+            <li>OPTIONSリクエスト（CORSプリフライト）は認証スキップ（仕様上の必要性）</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">効果</div>
+          <ul>
+            <li>同一LAN内の他端末からダッシュボードを操作されるリスクを防止</li>
+            <li>ツールの起動・停止・設定変更を認証者のみに限定</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対策4: CORS制限 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-orange">🌐</div>
+        <div class="measure-title-area">
+          <h3>CORSポリシーをlocalhostのみに制限</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          APIサーバーが <code>Access-Control-Allow-Origin: *</code>（全オリジン許可）で動作していた問題を修正。
+          悪意あるウェブサイトがユーザーのブラウザ経由でAPIを呼び出せる状態（CSRF的リスク）を解消します。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">変更内容</div>
+          <table class="compare-table">
+            <tr>
+              <th>項目</th>
+              <th>変更前</th>
+              <th>変更後</th>
+            </tr>
+            <tr>
+              <td>許可オリジン</td>
+              <td class="before">* （すべて許可）</td>
+              <td class="after">localhost / 127.0.0.1 のみ</td>
+            </tr>
+            <tr>
+              <td>file:// ページ</td>
+              <td>許可</td>
+              <td class="after">引き続き許可（null オリジン対応）</td>
+            </tr>
+            <tr>
+              <td>外部ドメイン</td>
+              <td class="before">許可</td>
+              <td class="after">ブロック</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対策5: ローカルバインド -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-green">🔌</div>
+        <div class="measure-title-area">
+          <h3>サーバーを127.0.0.1にバインド（外部アクセス完全遮断）</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          Node.jsサーバーがデフォルト（<code>0.0.0.0</code>）で起動していたため、
+          同一LAN内の端末から直接アクセス可能な状態でした。
+          <code>127.0.0.1</code> にバインドすることでOSレベルで外部アクセスを遮断します。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施内容</div>
+          <ul>
+            <li><code>server.listen(PORT)</code> → <code>server.listen(PORT, '127.0.0.1')</code> に変更</li>
+            <li>管理者権限不要・OS設定変更なしで即時有効</li>
+            <li>ファイアウォールより確実（Windowsファイアウォールは設定が上書きされる可能性がある）</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">効果</div>
+          <ul>
+            <li>カフェや公共Wi-Fiでも外部からのアクセスが物理的に不可能</li>
+            <li>Basic認証との2段構えで、より堅牢な防御を実現</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 対策6: Notionトークンのenv化 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-blue">📝</div>
+        <div class="measure-title-area">
+          <h3>server.js内のハードコードトークンを環境変数化</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          <code>server.js</code> の <code>/sns-approved-posts</code> エンドポイントにNotionトークンが
+          ソースコード内に直書きされていた問題を修正。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施内容</div>
+          <ul>
+            <li><code>const NOTION_TOKEN = 'ntn_...'</code> → <code>process.env.NOTION_TOKEN</code> に変更</li>
+            <li>起動時に <code>.secrets/.env</code> から自動読み込み</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 残課題 -->
+  <h2 class="section-title">⚠️ 残課題（定期メンテナンス）</h2>
+  <div class="todo-list">
+    <div class="todo-item">
+      <h4>依存パッケージの脆弱性チェック</h4>
+      <p>月1回程度 <code>npm audit</code> / <code>pip-audit</code> を実行し、既知の脆弱性がないか確認する。</p>
+    </div>
+    <div class="todo-item">
+      <h4>Xプロファイルフォルダの権限制限</h4>
+      <p><code>sns-generator/x_profile/</code> にはX（Twitter）ログインセッションが保存されている。<code>.secrets</code> と同様にアクセス権限を制限することを検討。</p>
+    </div>
+    <div class="todo-item">
+      <h4>APIキーの定期ローテーション</h4>
+      <p>Notion・Claude・LINEの各APIキーを3〜6か月ごとに再発行し、<code>.secrets/.env</code> を更新する。</p>
+    </div>
+    <div class="todo-item">
+      <h4>Playwrightの--no-sandboxフラグ見直し</h4>
+      <p>スクレイピングスクリプトがChromiumサンドボックスを無効化して起動している。スクレイピング先が信頼できる既知サイトのみであれば許容範囲内。</p>
+    </div>
+  </div>
+
+  <!-- まとめ -->
+  <h2 class="section-title">📋 対策サマリー</h2>
+  <div style="background:#1e293b;border:1px solid #2d3f55;border-radius:12px;overflow:hidden;">
+    <table class="compare-table" style="margin:0;">
+      <thead>
+        <tr>
+          <th>リスク</th>
+          <th>対策</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>APIキー漏洩（ファイル分散）</td>
+          <td><code>.secrets/.env</code> に一元化</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>APIキー漏洩（ファイル権限）</td>
+          <td>Windowsアクセス権限を自ユーザーのみに制限</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>ダッシュボード不正操作</td>
+          <td>Basic認証（ユーザー名＋パスワード）</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>外部サイトからのAPI呼び出し</td>
+          <td>CORSをlocalhostのみに制限</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>同一LAN端末からのアクセス</td>
+          <td>127.0.0.1バインド＋Basic認証の2段構え</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>ソースコード内のトークン直書き</td>
+          <td>環境変数（<code>process.env</code>）化</td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>パッケージ脆弱性</td>
+          <td><code>npm audit</code> / <code>pip-audit</code> の定期実施</td>
+          <td><span class="status-badge status-pending">△ 定期実施</span></td>
+        </tr>
+        <tr>
+          <td>セッションデータの露出</td>
+          <td>Xプロファイルフォルダの権限制限</td>
+          <td><span class="status-badge status-pending">△ 検討中</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <p>AI自動化ツール群 セキュリティレポート ｜ 最終更新: 2026年4月</p>
+  <p style="margin-top:8px;">
+    <a href="index.html">← AI業務効率化ツール紹介へ戻る</a>
+  </p>
+</footer>
+
+</body>
+</html>
