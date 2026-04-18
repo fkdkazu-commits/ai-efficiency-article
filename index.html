@@ -154,6 +154,60 @@
     color: #3A5080;
   }
 
+
+  /* 目次 */
+  .toc {
+    background: #F4F8FF;
+    border: 1.5px solid #C5DCFF;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 32px 0 40px;
+  }
+  .toc-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #1A73E8;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .toc ol {
+    padding-left: 20px;
+    margin: 0;
+  }
+  .toc li {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .toc a {
+    color: #1A2B4A;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .toc a:hover {
+    color: #1A73E8;
+    border-bottom-color: #1A73E8;
+  }
+  .toc .toc-badge {
+    display: inline-block;
+    background: #1A73E8;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .toc .toc-security {
+    background: #059669;
+  }
+  .toc .toc-summary {
+    background: #0D47A1;
+  }
+
   hr { border: none; border-top: 1px solid #EBF3FF; margin: 40px 0; }
 </style>
 </head>
@@ -172,9 +226,23 @@
   <hr>
 
   <!-- ① ダッシュボード -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ①</span>
+  <!-- 目次 -->
+  <nav class="toc" aria-label="目次">
+    <div class="toc-title">📋 目次</div>
+    <ol>
+      <li><a href="#app01"><span class="toc-badge">①</span>ローカルダッシュボード</a></li>
+      <li><a href="#app02"><span class="toc-badge">②</span>Gmail LINE通知ツール</a></li>
+      <li><a href="#app03"><span class="toc-badge">③</span>GSCカニバリゼーション分析ツール</a></li>
+      <li><a href="#app04"><span class="toc-badge">④</span>SEO記事自動化パイプライン</a></li>
+      <li><a href="#app05"><span class="toc-badge">⑤</span>会社経営 AI役員チーム</a></li>
+      <li><a href="#app06"><span class="toc-badge">⑥</span>SNS投稿 自動生成ツール</a></li>
+      <li><a href="#app07"><span class="toc-badge">⑦</span>Gmail → カレンダー 自動化</a></li>
+      <li><a href="#summary"><span class="toc-badge toc-summary">まとめ</span>7ツール効果一覧</a></li>
+      <li><a href="#security"><span class="toc-badge toc-security">🔐</span>セキュリティ対策</a></li>
+    </ol>
+  </nav>
+
+  <div class="section" id="app01">
       <h2>ローカルダッシュボード</h2>
     </div>
     <p class="section-sub">〜 すべてのツールをブラウザから一発起動 〜</p>
@@ -201,9 +269,7 @@
   <hr>
 
   <!-- ② Gmail LINE通知 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ②</span>
+  <div class="section" id="app02">
       <h2>Gmail LINE通知ツール</h2>
     </div>
     <p class="section-sub">〜 Gmailの全メールをリアルタイムでLINEに転送 〜</p>
@@ -231,9 +297,7 @@
   <hr>
 
   <!-- ③ GSCカニバリ -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ③</span>
+  <div class="section" id="app03">
       <h2>GSCカニバリゼーション分析ツール</h2>
     </div>
     <p class="section-sub">〜 SEOの共食いをビジュアルで一発チェック 〜</p>
@@ -261,9 +325,7 @@
   <hr>
 
   <!-- ④ SEO記事パイプライン -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ④</span>
+  <div class="section" id="app04">
       <h2>SEO記事自動化パイプライン</h2>
     </div>
     <p class="section-sub">〜 リサーチから執筆まで、AIが全工程を担当 〜</p>
@@ -299,9 +361,7 @@
   <hr>
 
   <!-- ⑤ AI役員チーム -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ⑤</span>
+  <div class="section" id="app05">
       <h2>会社経営 AI役員チーム</h2>
     </div>
     <p class="section-sub">〜 CMO・CFO・CPO・CSO・CDOをAIで並列運用 〜</p>
@@ -330,9 +390,7 @@
   <hr>
 
   <!-- ⑥ SNS自動投稿 -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ⑥</span>
+  <div class="section" id="app06">
       <h2>SNS投稿 自動生成ツール</h2>
     </div>
     <p class="section-sub">〜 AIトレンドをリサーチして、投稿案3件をNotionに自動保存 〜</p>
@@ -363,9 +421,7 @@
   <hr>
 
   <!-- ⑦ Gmail→カレンダー -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-num">アプリ⑦</span>
+  <div class="section" id="app07">
       <h2>Gmail → カレンダー 自動化</h2>
     </div>
     <p class="section-sub">〜 打ち合わせメールを受け取ったら自動でカレンダー登録 〜</p>
@@ -387,7 +443,7 @@
   <hr>
 
   <!-- まとめ -->
-  <div class="summary-box">
+  <div class="summary-box" id="summary">
     <h3>まとめ：Claude Codeで「自分専用の業務OS」を作る</h3>
     <table>
       <tr><th>アプリ</th><th>削減できた作業</th></tr>
