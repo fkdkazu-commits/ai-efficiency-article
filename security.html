@@ -397,6 +397,26 @@
 </head>
 <body>
 
+<nav class="site-nav" aria-label="サイトナビゲーション">
+  <div class="site-nav-inner">
+    <span class="site-nav-brand">🤖 AI自動化ツール</span>
+    <ul>
+      <li><a href="index.html" data-page="index">📄 アプリ7選</a></li>
+      <li><a href="security.html" data-page="security">🛡 セキュリティレポート</a></li>
+      <li><a href="http://localhost:3456" target="_blank" rel="noopener">🖥 ダッシュボード <span class="nav-local">ローカル</span></a></li>
+    </ul>
+  </div>
+</nav>
+<script>
+  // 現在のページを自動でアクティブ表示
+  (function(){
+    var page = location.pathname.split('/').pop() || 'index.html';
+    var key  = page.replace('.html','');
+    var el   = document.querySelector('.site-nav a[data-page="' + key + '"]');
+    if(el) el.classList.add('nav-active');
+  })();
+</script>
+
 <!-- ヘッダー -->
 <header>
   <div class="header-badge">
