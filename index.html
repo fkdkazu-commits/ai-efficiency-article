@@ -465,54 +465,38 @@
     </div>
     <p class="section-sub">〜 運用して気づいた落とし穴と、実際に施した対策の紹介 〜</p>
 
-    <p>これらのツールを実際に運用するなかで、<strong>セキュリティ面でいくつかの落とし穴</strong>がありました。自分が踏んだ失敗と、それに対して実際に設定した内容を紹介します。</p>
+    <p>ツールを実際に運用していくなかで、<strong>セキュリティ面でいくつかの問題点</strong>に気づきました。具体的な実装内容はセキュリティ上の理由から非公開ですが、対策した領域と考え方を紹介します。</p>
 
     <div class="flow-code">
       ⚠️ 運用して気づいた失敗パターン<br>
-      APIキーをコードに直書き → Gitにpush → GitHubで全公開 😱<br>
-      ローカルサーバーを認証なしで起動 → 同じWi-Fiの端末から操作できる状態に<br>
-      .envファイルをフォルダごと共有 → APIキーが相手に渡ってしまう
+      APIキーをコードに混在させていた → フォルダ共有時に漏洩リスクがあった<br>
+      ローカルサーバーをデフォルト設定で起動 → 意図せず外部から到達できる状態だった<br>
+      ダッシュボードに認証なし → 同じネットワークの端末から操作できる状態だった
     </div>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">① APIキーは .env ファイルに集約して管理</h3>
-    <p>Notion・Claude API・LINEなど複数サービスのAPIキーが各ツールに分散していたため、<strong>ホームディレクトリ直下の隠しフォルダ（<code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.secrets/.env</code>）に一元化しています。</strong></p>
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">① APIキーをプロジェクト外で一元管理</h3>
+    <p>複数ツールで利用するAPIキーが各プロジェクトフォルダに分散していたため、<strong>プロジェクトとは別の安全な場所にまとめて管理する構成に変更しました。</strong></p>
     <ul>
-      <li>各プロジェクトの <code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.env</code> にはDB IDなどプロジェクト固有の値のみを残し、APIキーは共通ファイルから読み込む構成にしています</li>
-      <li>フォルダを共有・コピーしてもAPIキーが含まれない状態を実現しています</li>
-      <li><code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.secrets</code> フォルダはWindowsのファイルアクセス権限を自ユーザーのみに制限し、隠し属性も付与しています</li>
+      <li>プロジェクトフォルダ内には、そのツール固有の設定値のみを残す構成にしています</li>
+      <li>フォルダをコピー・共有してもAPIキーが含まれない状態を実現しています</li>
+      <li>保存先にはOSレベルのアクセス制限を設けています</li>
     </ul>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">② ローカルサーバーをループバックアドレスにバインド</h3>
-    <p>ダッシュボードのサーバーがデフォルト設定（全インターフェース待ち受け）だったため、同じLAN内の端末からも操作できる状態でした。<strong>バインドアドレスをループバックアドレスのみに変更し、外部ネットワークからのアクセスをOSレベルで遮断しています。</strong></p>
-    <div class="flow-code">
-      // ❌ 変更前：全インターフェースで待ち受け（LAN内から到達可能）<br>
-      server.listen(ポート番号)<br><br>
-      // ✅ 変更後：ループバックアドレスのみ（外部から接続不可）<br>
-      server.listen(ポート番号, 'ループバックアドレス')
-    </div>
-    <p>管理者権限不要で即時有効な対策です。ファイアウォール設定より確実に機能します。</p>
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">② ローカルサーバーの外部アクセスを遮断</h3>
+    <p>ダッシュボードのサーバーがデフォルト設定のままで、<strong>同じネットワーク上の別端末からアクセスできる状態</strong>でした。サーバーの待ち受け設定を変更し、ローカルからの接続のみ受け付けるよう修正しています。</p>
+    <p style="font-size:13px; color:#888;">※ 設定変更はサーバー起動コード1行で実現できます。管理者権限も不要です。</p>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">③ ダッシュボードにBasic認証を追加</h3>
-    <p>起動・停止・設定変更ができるダッシュボードが認証なしで動作していたため、<strong>Basic認証を実装しています。</strong>認証情報は <code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">.secrets/.env</code> で管理し、コードには直書きしていません。</p>
-    <ul>
-      <li>ループバックバインドとの2段構えで、同一LAN内からの不正操作も防止しています</li>
-      <li>ブラウザの標準的な認証ダイアログで保護されます（<code style="background:#f4f8ff;border:1px solid #C5DCFF;padding:2px 7px;border-radius:4px;font-size:13px;">WWW-Authenticate: Basic</code>）</li>
-    </ul>
+    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">③ ダッシュボードにアクセス認証を追加</h3>
+    <p>起動・停止・設定変更ができるダッシュボードが<strong>認証なしで操作できる状態</strong>でした。パスワード認証を導入し、認証情報はプロジェクト外で管理する構成にしています。</p>
 
     <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">④ 依存パッケージの脆弱性チェックを定期実施</h3>
-    <p>使用しているライブラリに既知の脆弱性が発見されることがあるため、定期的に以下のコマンドで確認しています。</p>
-    <div class="flow-code">
-      # Node.js の場合<br>
-      npm audit<br><br>
-      # Python の場合<br>
-      pip-audit
-    </div>
+    <p>利用しているライブラリに既知の脆弱性が発見されることがあるため、定期的にチェックするコマンドを実行しています。ツールごとに対応するコマンドが用意されています。</p>
 
     <div style="background:#FFF8E1; border-left:4px solid #F59E0B; border-radius:4px; padding:16px 20px; margin:24px 0;">
       <p style="margin:0; font-size:14px; color:#78350F;">
-        <strong>💡 今回の対策まとめ</strong><br>
-        ① APIキーを隠しフォルダに一元管理　② サーバーをループバックアドレスのみにバインド　③ ダッシュボードにBasic認証を追加　④ パッケージ脆弱性を定期チェック<br>
-        個人開発・ローカル運用レベルのリスクはこの4つでほぼカバーできています。
+        <strong>💡 対策のポイント</strong><br>
+        ① APIキーをプロジェクト外で一元管理　② サーバーの外部アクセスを遮断　③ 操作画面に認証を追加　④ パッケージ脆弱性を定期チェック<br>
+        いずれも「設定ミスや意図しない公開状態」をなくすことが目的で、個人開発レベルのリスクはこの4つでほぼカバーできています。
       </p>
     </div>
   </div>
