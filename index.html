@@ -5,62 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Claude Codeで作った業務自動化アプリ7選｜実際に使っている仕組みを全公開</title>
 <style>
-  /* 共通ナビゲーションバー */
-  .site-nav {
-    background: #0f172a;
-    border-bottom: 1px solid #1e293b;
-    padding: 0 24px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .site-nav-inner {
-    max-width: 960px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 0;
-    height: 48px;
-  }
-  .site-nav-brand {
-    font-size: 13px;
-    font-weight: 700;
-    color: #4ade80;
-    margin-right: 24px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .site-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 4px;
-    margin: 0;
-    padding: 0;
-    flex-wrap: wrap;
-  }
-  .site-nav li { margin: 0; }
-  .site-nav a {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 13px;
-    color: #94a3b8;
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    border-bottom: none;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
-  }
-  .site-nav a:hover { background: #1e293b; color: #e2e8f0; border-bottom: none; }
-  .site-nav a.nav-active { color: #f8fafc; background: #1e293b; font-weight: 600; }
-  .site-nav .nav-local {
-    font-size: 10px;
-    background: #334155;
-    color: #94a3b8;
-    padding: 1px 6px;
-    border-radius: 4px;
-  }
 
   html { scroll-behavior: smooth; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -248,25 +192,6 @@
 </style>
 </head>
 <body>
-<nav class="site-nav" aria-label="サイトナビゲーション">
-  <div class="site-nav-inner">
-    <span class="site-nav-brand">🤖 AI自動化ツール</span>
-    <ul>
-      <li><a href="index.html" data-page="index">📄 アプリ7選</a></li>
-      <li><a href="security.html" data-page="security">🛡 セキュリティレポート</a></li>
-      <li><a href="http://localhost:3456" target="_blank" rel="noopener">🖥 ダッシュボード <span class="nav-local">ローカル</span></a></li>
-    </ul>
-  </div>
-</nav>
-<script>
-  // 現在のページを自動でアクティブ表示
-  (function(){
-    var page = location.pathname.split('/').pop() || 'index.html';
-    var key  = page.replace('.html','');
-    var el   = document.querySelector('.site-nav a[data-page="' + key + '"]');
-    if(el) el.classList.add('nav-active');
-  })();
-</script>
 
 <div class="article">
 
