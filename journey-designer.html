@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>顧客育成ジャーニー設計AI｜SNSから購買・LTV向上まで自動設計</title>
+<meta name="description" content="SNS×CRM統合マーケティング戦略をAIが自動設計。業界トレンド・X実投稿データ・YouTube分析を組み合わせ、認知から顧客ロイヤル化まで6フェーズのジャーニーを即時生成します。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f8f7ff;
+  color: #1a1a2e;
+  line-height: 1.8;
+}
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  padding: 80px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f8f7ff;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-size: clamp(24px, 4vw, 44px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.hero h1 em {
+  font-style: normal;
+  color: #fb923c;
+}
+.hero-sub {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255,255,255,0.88);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* ── Container ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+/* ── Section card ── */
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 40px rgba(118,75,162,0.08);
+  border: 1px solid rgba(102,126,234,0.1);
+}
+@media (max-width: 640px) { .card { padding: 28px 20px; } }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #667eea, #f093fb) 1;
+}
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.card h2 { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #1a1a2e; }
+
+p { font-size: 15px; color: #374151; margin-bottom: 14px; line-height: 1.9; }
+strong { color: #764ba2; font-weight: 700; }
+
+/* ── 課題 ── */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.pain-item {
+  background: linear-gradient(135deg, #fff5f5, #fce7f3);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.pain-icon { font-size: 28px; margin-bottom: 8px; }
+.pain-text { font-size: 13px; font-weight: 600; color: #374151; }
+
+/* ── 解決策 ── */
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.solution-item {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+.solution-item h4 { font-size: 14px; font-weight: 700; color: #166534; margin-bottom: 6px; }
+.solution-item p { font-size: 13px; color: #374151; margin: 0; }
+
+/* ── 6フェーズ ── */
+.phases {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+.phase-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #f8f7ff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  border: 1px solid rgba(102,126,234,0.12);
+}
+.phase-num {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.phase-info h4 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+.phase-info p { font-size: 13px; color: #6b7280; margin: 0; }
+.phase-arrow {
+  font-size: 20px;
+  color: #c4b5fd;
+  text-align: center;
+  padding-left: 26px;
+}
+
+/* ── データソース ── */
+.datasource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.ds-item {
+  border-radius: 16px;
+  padding: 22px;
+  text-align: center;
+}
+.ds-item.web { background: linear-gradient(135deg, #f0f4ff, #e8eeff); border: 1px solid rgba(99,102,241,0.2); }
+.ds-item.x { background: linear-gradient(135deg, #f5f5f5, #e8e8e8); border: 1px solid rgba(0,0,0,0.12); }
+.ds-item.yt { background: linear-gradient(135deg, #fff5f5, #ffe4e4); border: 1px solid rgba(239,68,68,0.2); }
+.ds-item.ai { background: linear-gradient(135deg, #fdf4ff, #f3e8ff); border: 1px solid rgba(168,85,247,0.2); }
+.ds-icon { font-size: 32px; margin-bottom: 10px; }
+.ds-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+.ds-desc { font-size: 12px; color: #6b7280; line-height: 1.6; }
+.ds-real {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: rgba(34,197,94,0.15);
+  color: #166534;
+}
+
+/* ── 出力サンプル ── */
+.output-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.output-item {
+  background: #f8f7ff;
+  border-radius: 14px;
+  padding: 18px;
+  border-left: 4px solid #667eea;
+}
+.output-item h4 { font-size: 13px; font-weight: 700; color: #667eea; margin-bottom: 6px; }
+.output-item p { font-size: 13px; color: #374151; margin: 0; }
+
+/* ── Tech stack ── */
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.tech-tag {
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+  border: 1px solid rgba(102,126,234,0.25);
+  color: #4338ca;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* ── 比較表 ── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.compare-table th {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+}
+.compare-table th:first-child { border-radius: 12px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 12px 0 0; }
+.compare-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #f8f7ff; }
+.check { color: #16a34a; font-weight: 700; }
+.cross { color: #dc2626; }
+
+/* ── CTA ── */
+.cta-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f093fb 100%);
+  border-radius: 24px;
+  padding: 52px 48px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+  border-radius: 50%;
+}
+.cta-card h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 900;
+  margin-bottom: 12px;
+  position: relative;
+}
+.cta-card p {
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 32px;
+  position: relative;
+}
+.cta-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+}
+.btn-primary {
+  display: inline-block;
+  background: #fff;
+  color: #764ba2;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-secondary {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.btn-secondary:hover { transform: translateY(-2px); }
+
+/* ── Back link ── */
+.back-link {
+  text-align: center;
+  margin-top: 32px;
+}
+.back-link a {
+  color: #764ba2;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.back-link a:hover { text-decoration: underline; }
+
+/* ── Tags ── */
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; justify-content: center; }
+.tag {
+  background: rgba(102,126,234,0.1);
+  color: #667eea;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 20px;
+}
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">✦ Claude Code × マーケティングAI</div>
+    <h1>顧客育成<em>ジャーニー設計AI</em><br>SNSから購買・LTV向上まで自動設計</h1>
+    <p class="hero-sub">
+      業界トレンド・X実投稿データ・YouTube分析を組み合わせ<br>
+      中小企業のSNSマーケティング戦略を<strong style="color:#fb923c">数分で自動生成</strong>するWebアプリ
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🔍 リアルタイムWeb検索</span>
+      <span class="hero-badge">𝕏 X実投稿データ収集</span>
+      <span class="hero-badge">▶ YouTube分析</span>
+      <span class="hero-badge">🤖 Claude API</span>
+      <span class="hero-badge">⚡ FastAPI</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 課題 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">PROBLEM</span>
+      <h2>中小企業が抱えるSNSマーケティングの課題</h2>
+    </div>
+    <p>SNSを運用しているのに購買に繋がらない、外部コンサルに頼むと高額、戦略設計の方法論が複雑すぎる——多くの中小企業が同じ壁にぶつかっています。</p>
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="pain-icon">😔</div>
+        <div class="pain-text">フォロワーは増えても<br>売上に繋がらない</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">💸</div>
+        <div class="pain-text">コンサル費用が<br>月30〜100万円以上</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🤷</div>
+        <div class="pain-text">競合が何をしているか<br>調査する時間がない</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">📉</div>
+        <div class="pain-text">リピート率が低く<br>単発購入で終わる</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解決策 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">SOLUTION</span>
+      <h2>このツールが解決すること</h2>
+    </div>
+    <p>ブランド情報を入力するだけで、<strong>リアルタイムのWeb・SNSデータ</strong>を収集しながら、AIが顧客育成ジャーニーを自動設計します。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>✅ 戦略設計の即時化</h4>
+        <p>入力後すぐに6フェーズの詳細ジャーニーを生成。コンサルへの発注不要。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ 実データに基づく戦略</h4>
+        <p>DuckDuckGo検索・X実投稿・YouTubeからリアルタイムデータを収集して分析。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ 競合との差別化ポイント抽出</h4>
+        <p>競合名を入力するだけで、SNS戦略の調査と差別化ポイントを自動提示。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ LTV向上施策まで設計</h4>
+        <p>単なる認知獲得にとどまらず、リピート・ロイヤル化まで一貫した施策を提案。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6フェーズ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">JOURNEY</span>
+      <h2>6フェーズで設計する顧客育成ジャーニー</h2>
+    </div>
+    <p>認知から顧客のロイヤル化まで、各フェーズに<strong>チャネル戦略・コンテンツ施策・KPI</strong>を自動設定します。</p>
+    <div class="phases">
+      <div class="phase-item">
+        <div class="phase-num">1</div>
+        <div class="phase-info">
+          <h4>🔍 認知フェーズ</h4>
+          <p>ターゲットへのリーチ拡大。チャネル選定・コンテンツ戦略・KPI設計</p>
+        </div>
+      </div>
+      <div class="phase-arrow">↓</div>
+      <div class="phase-item">
+        <div class="phase-num">2</div>
+        <div class="phase-info">
+          <h4>💡 興味・教育フェーズ</h4>
+          <p>ブランド理解の促進。教育コンテンツ・信頼構築施策</p>
+        </div>
+      </div>
+      <div class="phase-arrow">↓</div>
+      <div class="phase-item">
+        <div class="phase-num">3</div>
+        <div class="phase-info">
+          <h4>🤔 検討・比較フェーズ</h4>
+          <p>購買障壁の除去。比較コンテンツ・口コミ・無料体験施策</p>
+        </div>
+      </div>
+      <div class="phase-arrow">↓</div>
+      <div class="phase-item">
+        <div class="phase-num">4</div>
+        <div class="phase-info">
+          <h4>🛒 購買フェーズ</h4>
+          <p>コンバージョン最大化。CTA設計・限定オファー・決済UX改善</p>
+        </div>
+      </div>
+      <div class="phase-arrow">↓</div>
+      <div class="phase-item">
+        <div class="phase-num">5</div>
+        <div class="phase-info">
+          <h4>🔄 リピートフェーズ</h4>
+          <p>再購買促進。フォローアップ・LINEステップ・定期購入化</p>
+        </div>
+      </div>
+      <div class="phase-arrow">↓</div>
+      <div class="phase-item">
+        <div class="phase-num">6</div>
+        <div class="phase-info">
+          <h4>👑 ロイヤル化フェーズ</h4>
+          <p>ファン育成・紹介経済圏の構築。LTV最大化施策</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- データソース -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">DATA</span>
+      <h2>4つのリアルデータソースで精度を担保</h2>
+    </div>
+    <p>一般的なAIツールと違い、<strong>リアルタイムのSNS・Web情報を収集してから</strong>戦略を設計します。</p>
+    <div class="datasource-grid">
+      <div class="ds-item web">
+        <div class="ds-icon">🔍</div>
+        <div class="ds-title">業界Web記事</div>
+        <div class="ds-desc">DuckDuckGoで業界トレンド記事を検索し、本文全文をスクレイピングして分析</div>
+        <span class="ds-real">✓ 実データ</span>
+      </div>
+      <div class="ds-item x">
+        <div class="ds-icon">𝕏</div>
+        <div class="ds-title">X実投稿データ</div>
+        <div class="ds-desc">Playwrightでログイン済みXを操作。エンゲージメント上位の実投稿を取得</div>
+        <span class="ds-real">✓ 実データ</span>
+      </div>
+      <div class="ds-item yt">
+        <div class="ds-icon">▶</div>
+        <div class="ds-title">YouTube分析</div>
+        <div class="ds-desc">YouTube Data APIで再生数上位の動画を取得。コンテンツトレンドを把握</div>
+        <span class="ds-real">✓ 実データ</span>
+      </div>
+      <div class="ds-item ai">
+        <div class="ds-icon">🤖</div>
+        <div class="ds-title">Claude AI分析</div>
+        <div class="ds-desc">収集した全データをClaude Sonnetが統合分析し、具体的な戦略に変換</div>
+        <span class="ds-real">✓ AI推論</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 出力内容 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">OUTPUT</span>
+      <h2>生成される戦略ドキュメント</h2>
+    </div>
+    <p>入力後、以下の内容がすべて<strong>自動生成</strong>されます。</p>
+    <div class="output-grid">
+      <div class="output-item">
+        <h4>📋 ジャーニー全体方針</h4>
+        <p>企業の強み・課題を踏まえた戦略サマリー</p>
+      </div>
+      <div class="output-item">
+        <h4>🗺️ 6フェーズ詳細設計</h4>
+        <p>各フェーズのKPI・施策・チャネル役割</p>
+      </div>
+      <div class="output-item">
+        <h4>📊 業界トレンド示唆</h4>
+        <p>リアルタイムWeb検索から得られたインサイト</p>
+      </div>
+      <div class="output-item">
+        <h4>⚔️ 競合差別化ポイント</h4>
+        <p>競合SNS戦略の調査と自社の打ち手</p>
+      </div>
+      <div class="output-item">
+        <h4>𝕏 ユーザーの本音</h4>
+        <p>X実投稿から見えるバズパターンと課題感</p>
+      </div>
+      <div class="output-item">
+        <h4>💰 LTV向上戦略</h4>
+        <p>自社データを踏まえたリピート・ロイヤル化施策</p>
+      </div>
+      <div class="output-item">
+        <h4>🚀 今すぐ着手すべきTOP3</h4>
+        <p>優先度付きの即効施策リスト</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 出力サンプル -->
+  <div class="card" style="border:2px solid rgba(251,146,60,0.35);background:#fff">
+    <div class="card-header" style="border-image:linear-gradient(90deg,#f59e0b,#fb923c) 1">
+      <span class="card-badge" style="background:linear-gradient(135deg,#f59e0b,#ea580c)">SAMPLE OUTPUT</span>
+      <h2>実際の出力サンプル（男性向けスカルプケアブランドの例）</h2>
+    </div>
+    <p>「BOLD SCALP（男性向けスカルプシャンプー・3,800〜6,500円 / 競合: スカルプD）」を入力した際の実際の出力です。以下はすべてAIが自動生成したものです。</p>
+
+    <!-- サンプル出力エリア：アンバートーン背景で説明部と区別 -->
+    <div style="background:linear-gradient(135deg,#fffbeb,#fff7ed);border:1px solid rgba(251,146,60,0.25);border-radius:20px;padding:28px;margin-top:16px">
+
+      <!-- ラベル -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <div style="width:8px;height:8px;background:#f59e0b;border-radius:50%;box-shadow:0 0 0 3px rgba(245,158,11,0.2)"></div>
+        <span style="font-size:12px;font-weight:700;color:#92400e;letter-spacing:.08em">AI生成アウトプット — BOLD SCALP</span>
+      </div>
+
+      <!-- 全体方針 -->
+      <div style="background:#fff;border-left:4px solid #f59e0b;border-radius:0 12px 12px 0;padding:16px 20px;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px;letter-spacing:.05em">📋 ジャーニー全体方針</div>
+        <p style="margin:0;font-size:14px;color:#374151;line-height:1.85">BOLD SCALPは「本格スカルプケアを続けやすい価格で」という強みを軸に、30〜40代男性の「何を使えばいいかわからない」という不安を解消するコンテンツ戦略を展開する。SNSでは教育型コンテンツで信頼を構築し、EC・LINEで購買・リピートへ誘導するCRM連動型設計とする。競合のスカルプDが「高価格・本格派」で訴求しているのに対し、継続しやすさとわかりやすさで差別化ポジションを確立する。</p>
+      </div>
+
+      <!-- 6フェーズ -->
+      <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:12px;letter-spacing:.05em">🗺️ 6フェーズ 顧客育成ジャーニー</div>
+      <div style="display:grid;gap:10px;margin-bottom:20px">
+
+        <!-- Phase 1 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #3b82f6">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:#3b82f6;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 1</span>
+            <span style="font-size:14px;font-weight:700">🔍 認知</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#3b82f6">目標：</span>薄毛に悩む男性へのブランド認知獲得</div>
+            <div><span style="font-weight:700;color:#3b82f6">チャネル：</span>YouTube・X</div>
+            <div><span style="font-weight:700;color:#3b82f6">KPI：</span>YouTube登録者+500人/月、Xインプレ10万/月</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>「市販シャンプーでは落とせない皮脂の話」など教育動画をYouTubeで週1投稿。Xでは#スカルプケア #薄毛対策タグを活用した短文ノウハウを毎日配信。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>YouTube「スカルプケア入門」シリーズ（全8本）の台本作成・撮影スケジュール策定</li>
+            <li>薄毛系インフルエンサー3〜5名へのコラボ打診</li>
+            <li>X投稿カレンダーを作成し1日1投稿を習慣化</li>
+          </ol>
+        </div>
+
+        <!-- Phase 2 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #10b981">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:#10b981;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 2</span>
+            <span style="font-size:14px;font-weight:700">💡 興味・教育</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#10b981">目標：</span>成分の優位性と継続効果への理解を深める</div>
+            <div><span style="font-weight:700;color:#10b981">チャネル：</span>Instagram・YouTube</div>
+            <div><span style="font-weight:700;color:#10b981">KPI：</span>Instagram保存率8%以上、YouTube視聴完了率40%以上</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>「なぜ効くのか」成分解説シリーズをInstagramカルーセルとYouTubeで展開。皮膚科医・毛髪診断士とのコラボで専門性を訴求。Before/After投稿はリール形式で保存率最大化を狙う。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>成分解説インフォグラフィックをInstagramで月4本投稿</li>
+            <li>毛髪診断士とのQ&Aライブ配信（月1回）</li>
+            <li>「使用3ヶ月の変化」Before/Afterシリーズの起案</li>
+          </ol>
+        </div>
+
+        <!-- Phase 3 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #f59e0b">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:#f59e0b;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 3</span>
+            <span style="font-size:14px;font-weight:700">🤔 検討・比較</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#d97706">目標：</span>購買障壁を除去し「BOLD SCALPを買う理由」を明確化</div>
+            <div><span style="font-weight:700;color:#d97706">チャネル：</span>自社ECサイト・Instagram</div>
+            <div><span style="font-weight:700;color:#d97706">KPI：</span>商品ページ離脱率50%以下、カートイン率10%以上</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>「スカルプDとの成分比較」「継続しやすい理由」コンテンツをInstagramで展開。ECサイトには口コミ特集ページを設置し、初回限定トライアルセットで心理的ハードルを下げる。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>競合比較LP（「なぜBOLD SCALPを選ぶか」）の作成</li>
+            <li>初回限定：スターターセット（シャンプー+トニック）を特別価格で提供</li>
+            <li>Instagram口コミ特集投稿を月2本（実購入者の声）</li>
+          </ol>
+        </div>
+
+        <!-- Phase 4 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #ef4444">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:#ef4444;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 4</span>
+            <span style="font-size:14px;font-weight:700">🛒 購買</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#ef4444">目標：</span>初回購入CVR最大化（目標CVR 3%以上）</div>
+            <div><span style="font-weight:700;color:#ef4444">チャネル：</span>自社ECサイト・LINE</div>
+            <div><span style="font-weight:700;color:#ef4444">KPI：</span>CVR 3%以上・カゴ落ち率60%以下</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>カゴ落ちユーザーへのLINEリマインド配信。ECサイト上での「定期購入で15%OFF」の訴求を強化。決済ページのステップ数を3→1に削減してCVR改善。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>カゴ落ち後24時間以内のLINEリマインド自動配信設定</li>
+            <li>ECサイト商品ページのCTA文言・ボタン色のABテスト実施</li>
+            <li>定期購入プランを全面に出した商品ページへのリニューアル</li>
+          </ol>
+        </div>
+
+        <!-- Phase 5 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #8b5cf6">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:#8b5cf6;color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 5</span>
+            <span style="font-size:14px;font-weight:700">🔄 リピート</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#8b5cf6">目標：</span>2回目購入率50%以上達成（現状課題の解消）</div>
+            <div><span style="font-weight:700;color:#8b5cf6">チャネル：</span>LINE・メールマガジン</div>
+            <div><span style="font-weight:700;color:#8b5cf6">KPI：</span>2回目購入率50%・LINEブロック率5%以下</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>購入後30日間のLINEステップ配信で「使い方・効果が出るタイミング・継続メリット」を自動教育。残量を考慮した購入タイミング（約25日後）に定期購入誘導クーポンを配信。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>購入翌日・7日・14日・30日の4ステップLINE配信シナリオ設計</li>
+            <li>25日後に「もうすぐなくなる頃ですね」残量アラート＋10%OFFクーポン配信</li>
+            <li>定期購入転換者限定の「会員ランク制度」導入</li>
+          </ol>
+        </div>
+
+        <!-- Phase 6 -->
+        <div style="background:#fff;border-radius:12px;padding:18px;border-left:4px solid #ec4899">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="background:linear-gradient(135deg,#ec4899,#a855f7);color:#fff;font-size:11px;font-weight:700;padding:2px 10px;border-radius:8px">PHASE 6</span>
+            <span style="font-size:14px;font-weight:700">👑 ロイヤル化</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;font-size:13px;margin-bottom:10px">
+            <div><span style="font-weight:700;color:#ec4899">目標：</span>ファン化・UGC創出・紹介経済圏の構築</div>
+            <div><span style="font-weight:700;color:#ec4899">チャネル：</span>X・Instagram・LINE会員プログラム</div>
+            <div><span style="font-weight:700;color:#ec4899">KPI：</span>UGC投稿数50件/月・紹介経由購入率15%</div>
+          </div>
+          <div style="font-size:13px;color:#374151"><span style="font-weight:700">コンテンツ戦略：</span>「3ヶ月継続レポート」UGCキャンペーンで購入者のリアル体験を拡散。紹介コード制度を導入し口コミ購入を仕組み化。GOLD会員限定の新商品先行体験で離脱防止。</div>
+          <ol style="font-size:13px;margin:8px 0 0 18px;color:#374151;line-height:1.8">
+            <li>#BOLDSCALP3ヶ月チャレンジ のハッシュタグキャンペーン設計・応募特典設定</li>
+            <li>アンバサダープログラム（紹介1件=500円分ポイント付与）の仕組み構築</li>
+            <li>GOLD会員（累計購入3回以上）限定の新商品モニター制度導入</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- チャネル役割 -->
+      <div style="background:#fff;border-radius:12px;padding:18px;margin-bottom:14px">
+        <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:12px;letter-spacing:.05em">📡 チャネル別役割分担</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:13px">
+          <div style="padding:10px;background:#f0f4ff;border-radius:10px"><span style="font-weight:700;display:block;margin-bottom:4px">𝕏 X（Twitter）</span>認知拡大・バズ創出・リアルタイム顧客の声収集。ハッシュタグ起点のUGC誘発。</div>
+          <div style="padding:10px;background:#fff0f0;border-radius:10px"><span style="font-weight:700;display:block;margin-bottom:4px">▶ YouTube</span>教育コンテンツによる深い信頼構築。検索流入からの新規認知も期待。</div>
+          <div style="padding:10px;background:#f0fff4;border-radius:10px"><span style="font-weight:700;display:block;margin-bottom:4px">📸 Instagram</span>ビジュアル訴求・Before/After・口コミ拡散。リール保存数でアルゴリズム獲得。</div>
+          <div style="padding:10px;background:#f5f0ff;border-radius:10px"><span style="font-weight:700;display:block;margin-bottom:4px">💬 LINE</span>CRM基盤。ステップ配信・残量アラート・クーポン配信でリピート促進。</div>
+          <div style="padding:10px;background:#fffbeb;border-radius:10px"><span style="font-weight:700;display:block;margin-bottom:4px">🛒 自社ECサイト</span>購買CX最適化。定期購入導線・クロスセル・口コミ表示で CVR最大化。</div>
+        </div>
+      </div>
+
+      <!-- トレンド・X・競合インサイト -->
+      <div style="display:grid;gap:12px;margin-bottom:14px">
+        <div style="background:#fff;border-left:4px solid #10b981;border-radius:0 12px 12px 0;padding:16px 20px">
+          <div style="font-size:11px;font-weight:700;color:#065f46;margin-bottom:8px;letter-spacing:.05em">📊 業界トレンドからの示唆</div>
+          <p style="margin:0;font-size:14px;color:#374151;line-height:1.85">スカルプケア市場は2025年に向けて男性化粧品全体の拡大とともに成長中。「成分へのこだわり」「継続使用による変化」をSNSで発信するブランドが高い支持を獲得しており、YouTubeショート・TikTokでの短尺動画が30〜40代男性への認知獲得に効果的。D2Cブランドへの直接購買意欲も高まっており、SNS→EC導線の整備が最優先課題となる。</p>
+        </div>
+        <div style="background:#fff;border-left:4px solid #1a1a1a;border-radius:0 12px 12px 0;padding:16px 20px">
+          <div style="font-size:11px;font-weight:700;color:#111;margin-bottom:8px;letter-spacing:.05em">𝕏 X実投稿データから見えるユーザーの本音</div>
+          <p style="margin:0;font-size:14px;color:#374151;line-height:1.85">「スカルプシャンプー 効果ない」「続けたら変わった」系の投稿が高エンゲージメント（❤️200〜800）。ユーザーは<strong>短期効果への不信感</strong>と<strong>長期継続への期待</strong>を同時に持っており、「3ヶ月後レポート」形式のUGCが最もバズりやすいパターン。成分の透明性を求める声も多く、「なぜ効くのか」コンテンツへの需要が高い。</p>
+        </div>
+        <div style="background:#fff;border-left:4px solid #f59e0b;border-radius:0 12px 12px 0;padding:16px 20px">
+          <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:8px;letter-spacing:.05em">⚔️ 競合（スカルプD）との差別化ポイント</div>
+          <p style="margin:0;font-size:14px;color:#374151;line-height:1.85">スカルプDはX上で「高価格・本格派」として認知されているが、「続けにくい」「コスパが悪い」という不満が散見される。BOLD SCALPは<strong>継続しやすい価格帯＋わかりやすい成分説明</strong>を前面に出すことで「本格ケアを諦めかけていた層」の受け皿ポジションを獲得できる。YouTubeの成分解説コンテンツは競合が手薄なブルーオーシャン領域。</p>
+        </div>
+      </div>
+
+      <!-- LTV戦略 -->
+      <div style="background:#fff;border-left:4px solid #6366f1;border-radius:0 12px 12px 0;padding:16px 20px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:#3730a3;margin-bottom:8px;letter-spacing:.05em">💰 LTV向上戦略</div>
+        <p style="margin:0;font-size:14px;color:#374151;line-height:1.85">現状のリピート率30%・客単価5,800円・継続月数3ヶ月を前提とすると推定LTVは約17,400円。LINEステップ配信と残量アラートの導入で継続月数を6ヶ月に延ばし、定期購入転換率を高めることで目標LTV 34,800円（現状比2倍）を目指す。具体的には①購入後30日ステップ配信の自動化 ②定期購入プランへの誘導強化 ③3ヶ月継続特典の設計 ④紹介プログラムで新規獲得コスト削減の4施策を優先実施する。継続月数が6ヶ月を超えた顧客は「GOLD会員」として特別扱いし、解約率を抑制する。</p>
+      </div>
+
+      <!-- 優先施策TOP3 -->
+      <div style="background:#fff;border-radius:12px;padding:18px">
+        <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:14px;letter-spacing:.05em">🚀 今すぐ着手すべき優先施策 TOP3</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start">
+            <span style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;white-space:nowrap">第1位</span>
+            <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:4px">「3ヶ月継続レポート」UGCキャンペーンの設計</div><div style="font-size:13px;color:#6b7280">X実データで最もバズる投稿形式がこのパターン。初回購入者にレビュー投稿を促す仕組みを作ることで認知〜信頼獲得を同時達成できる。コスト最小・効果最大の施策。</div></div>
+          </div>
+          <div style="border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start">
+            <span style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;white-space:nowrap">第2位</span>
+            <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:4px">購入後30日LINEステップ配信の実装</div><div style="font-size:13px;color:#6b7280">リピート率が低いという現状課題への直接打ち手。継続使用を促すコンテンツを自動配信し定期購入転換率を高める。LTV2倍に向けた最重要施策。</div></div>
+          </div>
+          <div style="border:1px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start">
+            <span style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;white-space:nowrap">第3位</span>
+            <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:4px">YouTube「なぜ効くのか」成分解説シリーズの開始</div><div style="font-size:13px;color:#6b7280">Xデータで「成分の透明性」へのニーズが確認済み。競合が手薄なブルーオーシャン領域で専門性ポジションを確立できる。</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /サンプル出力エリア -->
+  </div>
+
+  <!-- 比較 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">COMPARE</span>
+      <h2>既存の手段との比較</h2>
+    </div>
+    <table class="compare-table">
+      <tr>
+        <th>比較項目</th>
+        <th>コンサル依頼</th>
+        <th>汎用AI（ChatGPT等）</th>
+        <th>このツール</th>
+      </tr>
+      <tr>
+        <td>費用</td>
+        <td>月30〜100万円</td>
+        <td>月20〜30ドル</td>
+        <td class="check">開発費のみ</td>
+      </tr>
+      <tr>
+        <td>納期</td>
+        <td>2〜4週間</td>
+        <td>即時（手動入力）</td>
+        <td class="check">2日〜で納品</td>
+      </tr>
+      <tr>
+        <td>リアルタイムデータ</td>
+        <td class="check">調査次第</td>
+        <td class="cross">学習データのみ</td>
+        <td class="check">Web・X・YouTube取得</td>
+      </tr>
+      <tr>
+        <td>競合SNS調査</td>
+        <td class="check">手動で実施</td>
+        <td class="cross">情報なし</td>
+        <td class="check">自動収集</td>
+      </tr>
+      <tr>
+        <td>LTV設計まで</td>
+        <td class="check">対応可</td>
+        <td class="cross">汎用的な回答のみ</td>
+        <td class="check">6フェーズ一貫設計</td>
+      </tr>
+      <tr>
+        <td>社内展開・カスタマイズ</td>
+        <td class="cross">不可</td>
+        <td class="cross">不可</td>
+        <td class="check">御社専用に開発可</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 技術スタック -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">TECH</span>
+      <h2>技術スタック</h2>
+    </div>
+    <p>すべてオープンソース・APIを組み合わせて構築。<strong>御社の既存システムとの連携も対応可能</strong>です。</p>
+    <div class="tech-row">
+      <span class="tech-tag">🤖 Claude API（Anthropic）</span>
+      <span class="tech-tag">⚡ FastAPI（Python）</span>
+      <span class="tech-tag">🌐 DuckDuckGo Search</span>
+      <span class="tech-tag">🎭 Playwright（ブラウザ自動化）</span>
+      <span class="tech-tag">▶ YouTube Data API</span>
+      <span class="tech-tag">🕷️ BeautifulSoup（スクレイピング）</span>
+      <span class="tech-tag">📄 HTML / JavaScript</span>
+    </div>
+  </div>
+
+  <!-- こんな企業に -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">FOR</span>
+      <h2>こんな企業・担当者に向いています</h2>
+    </div>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>🛍️ D2C・EC事業者</h4>
+        <p>SNS起点の購買導線とLTV最大化を同時に設計したい</p>
+      </div>
+      <div class="solution-item">
+        <h4>📱 SNS担当者・マーケター</h4>
+        <p>感覚頼りの運用から脱却し、データドリブンな戦略を立てたい</p>
+      </div>
+      <div class="solution-item">
+        <h4>🏢 中小企業・スタートアップ</h4>
+        <p>マーケ専門人材なしに、本格的な戦略ドキュメントを作りたい</p>
+      </div>
+      <div class="solution-item">
+        <h4>🎯 マーケティング支援会社</h4>
+        <p>クライアントへの提案スピードと質を同時に向上させたい</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h2>御社専用の<br>マーケティングAIツールを開発します</h2>
+    <p>
+      このツールのような業務特化AIアプリを、御社の商品・業界・業務フローに合わせてカスタム開発します。<br>
+      まずはお気軽にDMまたはメールでご相談ください。
+    </p>
+    <div class="cta-btns">
+      <a href="https://x.com/Marketer_kazuf" target="_blank" class="btn-primary">𝕏 Xでお問い合わせ</a>
+      <a href="mailto:fkdkazu@gmail.com" class="btn-secondary">✉️ メールで相談する</a>
+    </div>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#SNSマーケティング</span>
+    <span class="tag">#顧客育成</span>
+    <span class="tag">#LTV向上</span>
+    <span class="tag">#ClaudeCode</span>
+    <span class="tag">#AIツール</span>
+    <span class="tag">#中小企業DX</span>
+    <span class="tag">#マーケティングAI</span>
+    <span class="tag">#業務自動化</span>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← 業務自動化アプリ一覧に戻る</a>
+  </div>
+
+</div>
+</body>
+</html>
