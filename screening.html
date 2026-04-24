@@ -330,6 +330,43 @@ strong { color: #1e40af; font-weight: 700; }
 .tag-green { background: #dcfce7; color: #166534; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
 .tag-red   { background: #fee2e2; color: #991b1b; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
 .divider { border: none; border-top: 1px solid #e2e8f0; margin: 14px 0; }
+/* Lightbox */
+.lb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 9999;
+  cursor: zoom-out;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.lb-overlay.active { display: flex; }
+.lb-overlay img {
+  max-width: 100%;
+  max-height: 95dvh;
+  border-radius: 8px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+  object-fit: contain;
+}
+.lb-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.zoomable { cursor: zoom-in; }
+.zoom-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 8px;
+}
 </style>
 </head>
 <body>
@@ -454,9 +491,10 @@ strong { color: #1e40af; font-weight: 700; }
         </div>
         <div style="flex:1;background:#fff;border-radius:8px;padding:4px 12px;font-size:12px;color:#9ca3af">localhost:8300</div>
       </div>
-      <img src="screening-screen.png" style="width:100%;display:block;" alt="採用支援AI スクリーニング画面">
+      <img src="screening-screen.png" class="zoomable" style="width:100%;display:block;" alt="採用支援AI スクリーニング画面" onclick="openLb(this)">
     </div>
-    <p style="text-align:center;font-size:13px;color:#9ca3af;margin-top:12px">▲ 実際のスクリーニング結果画面（サンプルデータ使用）</p>
+    <p style="text-align:center;font-size:13px;color:#9ca3af;margin-top:8px">▲ 実際のスクリーニング結果画面（サンプルデータ使用）</p>
+    <p class="zoom-hint">🔍 タップして拡大</p>
   </div>
 
   <!-- SAMPLE OUTPUT -->
@@ -666,5 +704,22 @@ strong { color: #1e40af; font-weight: 700; }
   </div>
 
 </div>
+<div class="lb-overlay" id="lb" onclick="closeLb()">
+  <span class="lb-close">✕</span>
+  <img id="lb-img" src="" alt="">
+</div>
+<script>
+function openLb(el) {
+  document.getElementById('lb-img').src = el.src;
+  document.getElementById('lb-img').alt = el.alt;
+  document.getElementById('lb').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  document.getElementById('lb').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+</script>
 </body>
 </html>
