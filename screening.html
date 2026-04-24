@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>採用支援AI Phase 2 — 応募者スクリーニング自動採点｜Claude Code 業務自動化</title>
+<meta name="description" content="履歴書PDFをアップロードするだけで求人とのマッチ度を0〜100点で自動採点。強み・懸念点・総合評価コメントも即出力。採用担当者の書類選考工数を大幅削減。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f0f7ff;
+  color: #1a1a2e;
+  line-height: 1.8;
+}
+
+.hero {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #60a5fa 100%);
+  padding: 80px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f0f7ff;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-size: clamp(24px, 4vw, 44px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.hero h1 em { font-style: normal; color: #fbbf24; }
+.hero-sub {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255,255,255,0.88);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 40px rgba(30,64,175,0.08);
+  border: 1px solid rgba(37,99,235,0.1);
+}
+@media (max-width: 640px) {
+  body { overflow-x: hidden; }
+  .container { padding: 32px 16px 60px; }
+  .card { padding: 24px 16px; }
+  .hero { padding: 48px 16px 80px; }
+  .pain-grid, .solution-grid, .feature-grid { grid-template-columns: 1fr; }
+  .compare-table { display: block; overflow-x: auto; }
+  .cta-card { padding: 36px 20px; }
+  .cta-btns { flex-direction: column; align-items: center; }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #1e40af, #60a5fa) 1;
+}
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.card h2 { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #1a1a2e; }
+
+p { font-size: 15px; color: #374151; margin-bottom: 14px; line-height: 1.9; }
+strong { color: #1e40af; font-weight: 700; }
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.pain-item {
+  background: linear-gradient(135deg, #fff5f5, #fce7f3);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.pain-icon { font-size: 28px; margin-bottom: 8px; }
+.pain-text { font-size: 13px; font-weight: 600; color: #374151; }
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.solution-item {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(37,99,235,0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+.solution-item h4 { font-size: 14px; font-weight: 700; color: #1e40af; margin-bottom: 6px; }
+.solution-item p { font-size: 13px; color: #374151; margin: 0; }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.feature-item {
+  background: #f0f7ff;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid rgba(37,99,235,0.12);
+  text-align: center;
+}
+.feature-icon { font-size: 30px; margin-bottom: 10px; }
+.feature-title { font-size: 14px; font-weight: 700; color: #1e40af; margin-bottom: 6px; }
+.feature-desc { font-size: 12px; color: #6b7280; line-height: 1.6; }
+
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.tech-tag {
+  background: linear-gradient(135deg, #1e40af15, #3b82f615);
+  border: 1px solid rgba(37,99,235,0.25);
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.compare-table th {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+}
+.compare-table th:first-child { border-radius: 12px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 12px 0 0; }
+.compare-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #f0f7ff; }
+.check { color: #16a34a; font-weight: 700; }
+.cross { color: #dc2626; }
+
+.cta-card {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 60%, #60a5fa 100%);
+  border-radius: 24px;
+  padding: 52px 48px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+  border-radius: 50%;
+}
+.cta-card h2 {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 900;
+  margin-bottom: 16px;
+  line-height: 1.4;
+  position: relative;
+}
+.cta-card p { color: rgba(255,255,255,0.88); margin-bottom: 32px; position: relative; }
+.cta-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+}
+.btn-primary {
+  background: #fff;
+  color: #1e40af;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.tag {
+  background: rgba(37,99,235,0.08);
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(37,99,235,0.2);
+}
+.back-link {
+  text-align: center;
+  margin-top: 8px;
+}
+.back-link a {
+  color: #6b7280;
+  font-size: 14px;
+  text-decoration: none;
+}
+.back-link a:hover { color: #2563eb; }
+
+/* スコアカードのサンプル表示用 */
+.score-demo {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid rgba(37,99,235,0.2);
+  border-radius: 20px;
+  padding: 28px;
+  margin-top: 16px;
+}
+.score-big {
+  font-size: 64px;
+  font-weight: 900;
+  color: #2563eb;
+  line-height: 1;
+}
+.rec-badge {
+  display: inline-block;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 5px 18px;
+  border-radius: 20px;
+  margin-top: 8px;
+}
+.cat-row { margin-bottom: 12px; }
+.cat-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.cat-name { font-size: 13px; color: #475569; font-weight: 500; }
+.cat-score { font-size: 13px; font-weight: 700; }
+.bar-bg { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+.cat-comment { font-size: 12px; color: #6b7280; margin-top: 3px; line-height: 1.5; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag-green { background: #dcfce7; color: #166534; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+.tag-red   { background: #fee2e2; color: #991b1b; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+.divider { border: none; border-top: 1px solid #e2e8f0; margin: 14px 0; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">採用支援AI — Phase 2</div>
+    <h1>履歴書PDFを貼るだけで<br><em>マッチ度を自動採点</em></h1>
+    <p class="hero-sub">
+      求人情報と応募者の書類をAIが照合し、0〜100点のスコアと<br>
+      カテゴリ別評価・強み・懸念点を即座に出力します。
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">📊 総合マッチスコア</span>
+      <span class="hero-badge">📈 カテゴリ別4項目</span>
+      <span class="hero-badge">✅ 強み / 懸念点 自動抽出</span>
+      <span class="hero-badge">⏱️ 約30秒で完了</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PROBLEM -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#dc2626,#ef4444)">PROBLEM</span>
+      <h2>書類選考に時間がかかりすぎていませんか？</h2>
+    </div>
+    <p>採用担当者が書類選考に費やす時間は、1人あたり平均<strong>15〜30分</strong>。月100名の応募があれば、それだけで<strong>25〜50時間</strong>が消える計算です。しかも判断基準が担当者によってブレやすく、属人化しがちです。</p>
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="pain-icon">⏱️</div>
+        <div class="pain-text">1人の書類確認に<br>15〜30分かかる</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">👤</div>
+        <div class="pain-text">判断基準が担当者によって<br>バラバラ（属人化）</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">📂</div>
+        <div class="pain-text">応募が増えると<br>処理が追いつかない</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">😓</div>
+        <div class="pain-text">本来の業務に集中できず<br>疲弊する採用担当</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLUTION -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#0891b2,#2563eb)">SOLUTION</span>
+      <h2>PDFをアップロードするだけで即採点</h2>
+    </div>
+    <p>求人情報と応募者の<strong>履歴書・職務経歴書PDF</strong>をアップロードすると、AIが内容を読み込み、求人とのマッチ度を自動でスコアリング。約30秒で結果が出ます。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>📊 総合マッチスコア（0〜100）</h4>
+        <p>4カテゴリの加重平均で算出。スコアに応じて「◎強く推奨〜×見送り」の推奨ラベルも自動付与。</p>
+      </div>
+      <div class="solution-item">
+        <h4>📈 カテゴリ別評価</h4>
+        <p>職務経験・業界経験・人材像との一致度・給与条件マッチの4軸でそれぞれ採点。弱点が一目でわかる。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ 強み・懸念点の抽出</h4>
+        <p>「なぜこのスコアか」をタグ形式で可視化。面接での確認事項もひと目で把握できる。</p>
+      </div>
+      <div class="solution-item">
+        <h4>💬 総合評価コメント</h4>
+        <p>AIが書類全体を読んだ上での定性コメント。書類選考の判断を補助する3〜4文の評価文。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#2563eb,#60a5fa)">FEATURES</span>
+      <h2>主な機能</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-icon">📄</div>
+        <div class="feature-title">PDFドラッグ&ドロップ</div>
+        <div class="feature-desc">クリックまたはドラッグ&ドロップで簡単アップロード。10MBまで対応。</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📥</div>
+        <div class="feature-title">求人情報インポート</div>
+        <div class="feature-desc">Phase 1（求人票タブ）で入力した求人情報をワンクリックで転記。二度手間なし。</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">スコア可視化</div>
+        <div class="feature-desc">プログレスバーと数値でカテゴリ別スコアを直感的に把握。</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🏷️</div>
+        <div class="feature-title">強み／懸念点タグ</div>
+        <div class="feature-desc">緑タグ（強み）・赤タグ（懸念点）で視覚的に整理。面接前の確認リストとして活用可能。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#0891b2,#2563eb)">SCREEN</span>
+      <h2>実際の画面</h2>
+    </div>
+    <p>サンプルデータを読み込んで「スクリーニングを実行」した結果画面です。左側に入力フォーム、右側にスコア結果がリアルタイム表示されます。</p>
+    <div style="border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15);margin-top:20px">
+      <div style="background:#e5e7eb;padding:10px 16px;display:flex;align-items:center;gap:10px">
+        <div style="display:flex;gap:6px">
+          <div style="width:12px;height:12px;border-radius:50%;background:#ef4444"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:#f59e0b"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:#22c55e"></div>
+        </div>
+        <div style="flex:1;background:#fff;border-radius:8px;padding:4px 12px;font-size:12px;color:#9ca3af">localhost:8300</div>
+      </div>
+      <img src="screening-screen.png" style="width:100%;display:block;" alt="採用支援AI スクリーニング画面">
+    </div>
+    <p style="text-align:center;font-size:13px;color:#9ca3af;margin-top:12px">▲ 実際のスクリーニング結果画面（サンプルデータ使用）</p>
+  </div>
+
+  <!-- SAMPLE OUTPUT -->
+  <div class="card" style="border:2px solid rgba(37,99,235,0.3)">
+    <div class="card-header" style="border-image:linear-gradient(90deg,#1e40af,#60a5fa) 1">
+      <span class="card-badge" style="background:linear-gradient(135deg,#1e40af,#0891b2)">SAMPLE OUTPUT</span>
+      <h2>実際の出力サンプル — スクリーニング結果</h2>
+    </div>
+    <p>「キャリアアドバイザー求人」に対して、「法人営業5年・CRM経験あり・人材業界未経験」の候補者書類を判定した際の出力例です。</p>
+
+    <div class="score-demo">
+      <div style="display:flex;align-items:flex-start;gap:28px;flex-wrap:wrap">
+
+        <!-- 左：スコア -->
+        <div style="text-align:center;min-width:140px">
+          <div style="font-size:13px;color:#64748b;margin-bottom:4px">山田 太郎</div>
+          <div class="score-big">78</div>
+          <div style="font-size:13px;color:#64748b;margin-top:2px">総合マッチスコア / 100</div>
+          <span class="rec-badge">○ 面接推奨</span>
+        </div>
+
+        <!-- 右：カテゴリ別 -->
+        <div style="flex:1;min-width:260px">
+          <div style="font-size:13px;font-weight:700;color:#475569;margin-bottom:12px">カテゴリ別スコア</div>
+
+          <div class="cat-row">
+            <div class="cat-header">
+              <span class="cat-name">職務経験・スキル</span>
+              <span class="cat-score" style="color:#16a34a">82</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" style="width:82%;background:#16a34a"></div></div>
+            <div class="cat-comment">人材紹介会社での法人営業5年の経験があり、求人提案・候補者推薦の実務に精通しています。</div>
+          </div>
+
+          <div class="cat-row">
+            <div class="cat-header">
+              <span class="cat-name">業界・職種経験</span>
+              <span class="cat-score" style="color:#2563eb">75</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" style="width:75%;background:#2563eb"></div></div>
+            <div class="cat-comment">人材業界での経験あり。キャリアアドバイザー業務は未経験ですが業界知識は十分です。</div>
+          </div>
+
+          <div class="cat-row">
+            <div class="cat-header">
+              <span class="cat-name">人材像との一致度</span>
+              <span class="cat-score" style="color:#2563eb">80</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" style="width:80%;background:#2563eb"></div></div>
+            <div class="cat-comment">コミュニケーション能力・目標達成意欲が高く、求める人材像と合致する点が多いです。</div>
+          </div>
+
+          <div class="cat-row">
+            <div class="cat-header">
+              <span class="cat-name">給与・条件マッチ</span>
+              <span class="cat-score" style="color:#d97706">70</span>
+            </div>
+            <div class="bar-bg"><div class="bar-fill" style="width:70%;background:#d97706"></div></div>
+            <div class="cat-comment">現年収が提示レンジ上限に近く、条件面での調整が必要になる可能性があります。</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#475569;margin-bottom:6px">強み</div>
+          <div class="tag-list">
+            <span class="tag-green">✓ 法人営業5年の実績</span>
+            <span class="tag-green">✓ 月間目標達成率140%</span>
+            <span class="tag-green">✓ CRM操作スキル</span>
+            <span class="tag-green">✓ チームリーダー経験</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#475569;margin-bottom:6px">懸念点</div>
+          <div class="tag-list">
+            <span class="tag-red">△ キャリアアドバイザー未経験</span>
+            <span class="tag-red">△ 給与条件の調整が必要な可能性</span>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div style="font-size:14px;color:#374151;line-height:1.9">
+        人材業界での豊富な営業経験を持ち、提案力・ヒアリング力は高く評価できます。キャリアアドバイザー業務自体は未経験ですが、これまでの経験を活かした即戦力としての活躍が期待できます。給与面での条件すり合わせは必要ですが、総合的には面接での確認を推奨します。
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#059669,#10b981)">COMPARE</span>
+      <h2>導入前後の比較</h2>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>従来（手作業）</th>
+          <th>採用支援AI（Phase 2）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>書類1件あたりの確認時間</td>
+          <td class="cross">15〜30分</td>
+          <td class="check">約30秒</td>
+        </tr>
+        <tr>
+          <td>判断基準の統一性</td>
+          <td class="cross">担当者依存・属人化</td>
+          <td class="check">AI基準で均一化</td>
+        </tr>
+        <tr>
+          <td>スコアの可視化</td>
+          <td class="cross">なし（感覚的判断）</td>
+          <td class="check">0〜100点＋カテゴリ別</td>
+        </tr>
+        <tr>
+          <td>強み・懸念点の整理</td>
+          <td class="cross">担当者がメモで管理</td>
+          <td class="check">タグ形式で自動抽出</td>
+        </tr>
+        <tr>
+          <td>月100名処理にかかる工数</td>
+          <td class="cross">25〜50時間</td>
+          <td class="check">1〜2時間程度</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TECH -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#374151,#6b7280)">TECH</span>
+      <h2>技術スタック</h2>
+    </div>
+    <p>Phase 1と同じバックエンドに機能追加する形で実装。PDFの読み込みはClaude APIのドキュメント機能を使用しています。</p>
+    <div class="tech-row">
+      <span class="tech-tag">Claude API（claude-sonnet-4-6）</span>
+      <span class="tech-tag">PDF Document API</span>
+      <span class="tech-tag">FastAPI（Python）</span>
+      <span class="tech-tag">python-multipart</span>
+      <span class="tech-tag">HTML / CSS / JavaScript</span>
+      <span class="tech-tag">Drag & Drop API</span>
+      <span class="tech-tag">FormData API</span>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">ROADMAP</span>
+      <h2>今後の拡張予定</h2>
+    </div>
+    <p>採用業務の流れに沿って順次機能を追加していきます。</p>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+      <div style="background:#dcfce7;border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center">
+        <span style="background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;white-space:nowrap">✅ Phase 1</span>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:2px">求人票・スカウト文の自動生成</div><div style="font-size:13px;color:#6b7280">入力5項目で7セクション構成の求人票＋個別スカウト文を即生成</div></div>
+      </div>
+      <div style="background:#dcfce7;border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center">
+        <span style="background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;white-space:nowrap">✅ Phase 2</span>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:2px">応募者スクリーニング・マッチングスコア</div><div style="font-size:13px;color:#6b7280">履歴書PDFをアップロードして求人とのマッチ度を自動スコアリング</div></div>
+      </div>
+      <div style="background:#f0f7ff;border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center">
+        <span style="background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;white-space:nowrap">Phase 3</span>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:2px">面接日程調整の自動化</div><div style="font-size:13px;color:#6b7280">候補者・企業・コーディネーターの3者日程を自動調整してカレンダーに登録</div></div>
+      </div>
+      <div style="background:#f0f7ff;border-radius:12px;padding:16px;display:flex;gap:14px;align-items:center">
+        <span style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:12px;font-weight:700;padding:4px 12px;border-radius:8px;white-space:nowrap">Phase 4</span>
+        <div><div style="font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:2px">候補者進捗管理ダッシュボード</div><div style="font-size:13px;color:#6b7280">複数クライアント×複数求人の候補者進捗を一元管理。ステータス変更で自動通知</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h2>御社専用の<br>採用DXツールを開発します</h2>
+    <p>
+      このツールのような業務特化AIアプリを、御社の採用フロー・業界・媒体に合わせてカスタム開発します。<br>
+      お気軽にXのDMからご相談ください。
+    </p>
+    <div class="cta-btns">
+      <a href="https://x.com/Marketer_kazuf" target="_blank" class="btn-primary">𝕏 Xでお問い合わせ</a>
+    </div>
+  </div>
+
+  <div class="tags">
+    <span class="tag">#採用DX</span>
+    <span class="tag">#スクリーニング自動化</span>
+    <span class="tag">#書類選考AI</span>
+    <span class="tag">#マッチングスコア</span>
+    <span class="tag">#ClaudeCode</span>
+    <span class="tag">#AIツール</span>
+    <span class="tag">#HR Tech</span>
+    <span class="tag">#業務効率化</span>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← 業務自動化アプリ一覧に戻る</a>
+  </div>
+
+</div>
+</body>
+</html>
