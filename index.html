@@ -79,58 +79,95 @@
   }
   /* ===== Hero Visual ===== */
   .hero-visual {
-    margin: 28px 0 8px;
-    max-width: 620px;
-    background: #0d1117;
+    margin: 0 auto 32px;
+    max-width: 880px;
+    background:
+      radial-gradient(ellipse at 60% 40%, #2B7FC0 0%, #1A5F9E 20%, #123E6B 45%, #0D2F5B 65%, #0D1F39 85%, #0D1B31 100%);
     border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-    padding: 28px 32px;
+    border-radius: 20px;
+    padding: 40px 48px;
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(251,146,60,0.15), 0 24px 60px rgba(0,0,0,0.4);
   }
   .hv-badges {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-bottom: 28px;
   }
   .hv-badge {
     font-size: 12px;
     font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-  }
-  .hv-badge-claude { background: rgba(251,146,60,0.2); border: 1px solid rgba(251,146,60,0.5); color: #fb923c; }
-  .hv-badge-update { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; }
-  .hv-badge-dark   { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); }
-  .hv-title { margin-bottom: 12px; }
-  .hv-title-sm { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
-  .hv-title-lg { font-size: clamp(24px, 4vw, 36px); font-weight: 900; color: #fff; line-height: 1.2; }
-  .hv-sep { width: 40px; height: 3px; background: #fb923c; border-radius: 2px; margin: 14px 0; }
-  .hv-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 16px; }
-  .hv-features { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .hv-feature {
-    font-size: 12px;
-    font-weight: 700;
     padding: 5px 14px;
     border-radius: 20px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
+  }
+  .hv-badge-claude { background: rgba(251,146,60,0.18); border: 1px solid rgba(251,146,60,0.5); color: #fb923c; }
+  .hv-badge-update { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.45); color: #4ade80; }
+  .hv-badge-dark   { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.55); }
+  .hv-title { margin-bottom: 16px; }
+  .hv-title-sm {
+    font-size: clamp(16px, 2vw, 20px);
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .hv-title-main {
+    font-size: clamp(44px, 8vw, 72px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #ffffff 0%, #5EC8FF 50%, #2B7FC0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(94,200,255,0.4));
+  }
+  .hv-title-sub {
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 900;
+    line-height: 1.3;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #ffffff 0%, #5EC8FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hv-sep { width: 48px; height: 3px; background: #fb923c; border-radius: 2px; margin: 20px auto; }
+  .hv-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.9;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .hv-features { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
+  .hv-feature {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 7px 18px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.2);
     color: rgba(255,255,255,0.8);
   }
   .hv-author {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 12px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    width: 100%;
+    justify-content: center;
   }
   .hv-author-icon {
-    width: 32px; height: 32px;
+    width: 34px; height: 34px;
     background: #fb923c;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; flex-shrink: 0;
   }
-  .hv-author-name { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .hv-author-name { font-size: 13px; color: rgba(255,255,255,0.55); }
 
   /* ===== メインコンテンツ ===== */
   .article {
@@ -375,9 +412,8 @@
         <span class="hv-badge hv-badge-dark">実例公開</span>
       </div>
       <div class="hv-title">
-        <div class="hv-title-sm">AIで作った</div>
-        <div class="hv-title-lg">業務自動化アプリ</div>
-        <div class="hv-title-lg">全部まとめ</div>
+        <div class="hv-title-main">AI業務自動化アプリ</div>
+        <div class="hv-title-sub">全部まとめ</div>
       </div>
       <div class="hv-sep"></div>
       <div class="hv-subtitle">実際に毎日使っている仕組みを、フロー図付きで全公開。<br>新しいアプリができるたびに追加していきます。</div>
