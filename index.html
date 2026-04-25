@@ -81,62 +81,56 @@
   .hero-visual {
     margin: 28px 0 8px;
     max-width: 620px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.18);
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.12);
     border-radius: 16px;
-    padding: 18px 24px 16px;
-    backdrop-filter: blur(8px);
+    padding: 28px 32px;
   }
-  .hv-label {
-    font-size: 10px;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  .hv-tools {
+  .hv-badges {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
-  .hv-tool {
+  .hv-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .hv-badge-claude { background: rgba(251,146,60,0.2); border: 1px solid rgba(251,146,60,0.5); color: #fb923c; }
+  .hv-badge-update { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4); color: #4ade80; }
+  .hv-badge-dark   { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); }
+  .hv-title { margin-bottom: 12px; }
+  .hv-title-sm { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
+  .hv-title-lg { font-size: clamp(24px, 4vw, 36px); font-weight: 900; color: #fff; line-height: 1.2; }
+  .hv-sep { width: 40px; height: 3px; background: #fb923c; border-radius: 2px; margin: 14px 0; }
+  .hv-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 16px; }
+  .hv-features { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .hv-feature {
     font-size: 12px;
     font-weight: 700;
     padding: 5px 14px;
     border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.8);
   }
-  .hv-claude { background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.55); color: #93c5fd; }
-  .hv-ms    { background: rgba(99,102,241,0.25); border: 1px solid rgba(99,102,241,0.55); color: #a5b4fc; }
-  .hv-pa    { background: rgba(139,92,246,0.2);  border: 1px solid rgba(139,92,246,0.45); color: #c4b5fd; }
-  .hv-more  { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.55); }
-  .hv-flow {
+  .hv-author {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
+    gap: 10px;
+    padding-top: 16px;
     border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 14px;
   }
-  .hv-node {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    text-align: center;
+  .hv-author-icon {
+    width: 32px; height: 32px;
+    background: #fb923c;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
   }
-  .hv-node-icon { font-size: 22px; }
-  .hv-node-text { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.5; }
-  .hv-arrow { color: rgba(255,255,255,0.3); font-size: 20px; flex-shrink: 0; }
-  .hv-center-node {
-    background: rgba(251,146,60,0.12);
-    border: 1px solid rgba(251,146,60,0.35);
-    border-radius: 10px;
-    padding: 8px 18px;
-  }
-  .hv-center-node .hv-node-text { color: #fb923c; font-weight: 700; font-size: 12px; }
+  .hv-author-name { font-size: 12px; color: rgba(255,255,255,0.55); }
 
   /* ===== メインコンテンツ ===== */
   .article {
@@ -374,28 +368,27 @@
     <div class="hero-tag">✦ Claude Code / Copilot Studio をはじめとした AI × 業務自動化</div>
 
     <div class="hero-visual">
-      <div class="hv-label">活用 AI ツール</div>
-      <div class="hv-tools">
-        <span class="hv-tool hv-claude">🤖 Claude Code / Claude API</span>
-        <span class="hv-tool hv-ms">⚡ Copilot Studio</span>
-        <span class="hv-tool hv-pa">🔄 Power Automate</span>
-        <span class="hv-tool hv-more">＋ その他 AI ツール</span>
+      <div class="hv-badges">
+        <span class="hv-badge hv-badge-claude">Claude Code</span>
+        <span class="hv-badge hv-badge-update">● 随時更新中</span>
+        <span class="hv-badge hv-badge-dark">業務自動化</span>
+        <span class="hv-badge hv-badge-dark">実例公開</span>
       </div>
-      <div class="hv-flow">
-        <div class="hv-node">
-          <div class="hv-node-icon">📋</div>
-          <div class="hv-node-text">業務課題<br>の整理</div>
-        </div>
-        <div class="hv-arrow">→</div>
-        <div class="hv-node hv-center-node">
-          <div class="hv-node-icon">🧠</div>
-          <div class="hv-node-text">最適なAIで<br>自動化設計</div>
-        </div>
-        <div class="hv-arrow">→</div>
-        <div class="hv-node">
-          <div class="hv-node-icon">⚡</div>
-          <div class="hv-node-text">工数削減<br>品質安定</div>
-        </div>
+      <div class="hv-title">
+        <div class="hv-title-sm">Claude Codeで作った</div>
+        <div class="hv-title-lg">業務自動化アプリ</div>
+        <div class="hv-title-lg">全部まとめ</div>
+      </div>
+      <div class="hv-sep"></div>
+      <div class="hv-subtitle">実際に毎日使っている仕組みを、フロー図付きで全公開。<br>新しいアプリができるたびに追加していきます。</div>
+      <div class="hv-features">
+        <span class="hv-feature">👤 作業時間を大幅削減</span>
+        <span class="hv-feature">🤖 AIが全工程を担当</span>
+        <span class="hv-feature">⚡ 完全自動化</span>
+      </div>
+      <div class="hv-author">
+        <div class="hv-author-icon">👤</div>
+        <div class="hv-author-name">稲田和弘 | AI/DX推進支援・SEO・YouTube・法人研修</div>
       </div>
     </div>
 
