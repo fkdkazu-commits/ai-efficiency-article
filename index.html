@@ -77,6 +77,66 @@
     color: #fb923c;
     font-weight: 900;
   }
+  /* ===== Hero Visual ===== */
+  .hero-visual {
+    margin: 28px 0 8px;
+    max-width: 620px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 16px;
+    padding: 18px 24px 16px;
+    backdrop-filter: blur(8px);
+  }
+  .hv-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .hv-tools {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .hv-tool {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+  .hv-claude { background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.55); color: #93c5fd; }
+  .hv-ms    { background: rgba(99,102,241,0.25); border: 1px solid rgba(99,102,241,0.55); color: #a5b4fc; }
+  .hv-pa    { background: rgba(139,92,246,0.2);  border: 1px solid rgba(139,92,246,0.45); color: #c4b5fd; }
+  .hv-more  { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.55); }
+  .hv-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 14px;
+  }
+  .hv-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    text-align: center;
+  }
+  .hv-node-icon { font-size: 22px; }
+  .hv-node-text { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.5; }
+  .hv-arrow { color: rgba(255,255,255,0.3); font-size: 20px; flex-shrink: 0; }
+  .hv-center-node {
+    background: rgba(251,146,60,0.12);
+    border: 1px solid rgba(251,146,60,0.35);
+    border-radius: 10px;
+    padding: 8px 18px;
+  }
+  .hv-center-node .hv-node-text { color: #fb923c; font-weight: 700; font-size: 12px; }
 
   /* ===== メインコンテンツ ===== */
   .article {
@@ -313,8 +373,32 @@
   <div class="hero-inner">
     <div class="hero-tag">✦ Claude Code / Copilot Studio をはじめとした AI × 業務自動化</div>
 
+    <div class="hero-visual">
+      <div class="hv-label">活用 AI ツール</div>
+      <div class="hv-tools">
+        <span class="hv-tool hv-claude">🤖 Claude Code / Claude API</span>
+        <span class="hv-tool hv-ms">⚡ Copilot Studio</span>
+        <span class="hv-tool hv-pa">🔄 Power Automate</span>
+        <span class="hv-tool hv-more">＋ その他 AI ツール</span>
+      </div>
+      <div class="hv-flow">
+        <div class="hv-node">
+          <div class="hv-node-icon">📋</div>
+          <div class="hv-node-text">業務課題<br>の整理</div>
+        </div>
+        <div class="hv-arrow">→</div>
+        <div class="hv-node hv-center-node">
+          <div class="hv-node-icon">🧠</div>
+          <div class="hv-node-text">最適なAIで<br>自動化設計</div>
+        </div>
+        <div class="hv-arrow">→</div>
+        <div class="hv-node">
+          <div class="hv-node-icon">⚡</div>
+          <div class="hv-node-text">工数削減<br>品質安定</div>
+        </div>
+      </div>
+    </div>
 
-  
   <h1 class="article-title">AIで構築した業務自動化アプリ｜Claude Code / Copilot Studio をはじめとした実運用の仕組みを公開</h1>
 
   <div class="hero-intro">
