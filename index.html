@@ -482,6 +482,7 @@
       <li><a href="#app06"><span class="toc-badge">⑥</span>SNS投稿 自動生成ツール</a></li>
       <li><a href="#app04"><span class="toc-badge">④</span>SEO記事自動化パイプライン</a></li>
       <li><a href="#app03"><span class="toc-badge">③</span>GSCカニバリゼーション分析ツール</a></li>
+      <li><a href="#app08"><span class="toc-badge">⑧</span>YouTube動画収集ツール</a></li>
     </ul>
 
     <div class="toc-cat">⚙️ 業務自動化</div>
@@ -757,6 +758,67 @@
       <span class="effect-badge">⏱️ 1記事の作業を約80%削減</span>
       <span class="effect-badge">🎯 品質が安定・ムラがなくなる</span>
       <span class="effect-badge">🔗 内部リンク切れを自動チェック</span>
+    </div>
+
+    <a href="seo-pipeline.html" style="display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:12px;text-decoration:none;margin-top:16px">
+      🔗 詳細ページを見る →
+    </a>
+  </div>
+
+  <hr>
+
+  <!-- ⑧ YouTube動画収集 -->
+  <div class="section" id="app08">
+    <div class="section-header">
+      <span class="section-num">アプリ⑧</span>
+      <h2>YouTube動画収集ツール</h2>
+    </div>
+    <p class="section-sub">〜 キーワード×期間指定で、漏れなく動画データを一括収集・Excel出力 〜</p>
+    <div class="tool-row"><span class="tool-tag" style="background:linear-gradient(135deg,#ff0000,#cc0000);color:#fff">▶ YouTube Data API v3</span></div>
+
+    <p>指定したキーワード・期間・動画タイプで YouTube の動画情報を<strong>1日単位で網羅的に収集</strong>するWebツールです。YouTube Data API v3 を直接呼び出し、取得したデータをそのままブラウザから <strong>Excel ダウンロード</strong>できます。</p>
+
+    <div class="flow-code">
+      ① APIキー・キーワード・期間・条件を入力<br>
+      　　　　↓<br>
+      ② 1日単位で順行 or 逆行に検索（ページネーション対応）<br>
+      　　　　↓<br>
+      ③ 動画詳細・チャンネル情報をAPIで一括取得<br>
+      　　　　↓<br>
+      ④ Shorts候補を自動判定（60秒以下 / #shortsタグ）<br>
+      　　　　↓<br>
+      ⑤ エンゲージメント率・拡散率を自動計算<br>
+      　　　　↓<br>
+      ⑥ 結果をブラウザでプレビュー → Excel出力
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0">
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(239,68,68,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">📅</div>
+        <div style="font-size:13px;font-weight:700;color:#dc2626">1日単位の網羅収集</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">順行・逆行の検索方向指定</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(239,68,68,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">📊</div>
+        <div style="font-size:13px;font-weight:700;color:#dc2626">20項目を一括取得</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">視聴回数・高評価・チャンネル情報など</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(239,68,68,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🎯</div>
+        <div style="font-size:13px;font-weight:700;color:#dc2626">Shorts自動判定</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">60秒以下 / #shortsタグで自動分類</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(239,68,68,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">⬇️</div>
+        <div style="font-size:13px;font-weight:700;color:#dc2626">Excel出力</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">エンゲージメント率・拡散率計算済み</div>
+      </div>
+    </div>
+
+    <div class="effects">
+      <span class="effect-badge">📋 20項目を自動収集・計算</span>
+      <span class="effect-badge">🎯 Shorts / 通常動画を自動仕分け</span>
+      <span class="effect-badge">⬇️ ワンクリックでExcel出力</span>
     </div>
   </div>
 
