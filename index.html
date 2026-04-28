@@ -1046,10 +1046,72 @@
       <span class="section-num">🔐</span>
       <h2>実際に行ったセキュリティ設定</h2>
     </div>
-    <p class="section-sub">〜 運用して気づいた落とし穴と、実際に施した対策の紹介 〜</p>
+    <p class="section-sub">〜 開発ツールと完成品を守る「2層の防御」〜</p>
     <div class="tool-row"><span class="tool-tag tool-claude">🤖 Claude API / Claude Code</span></div>
 
-    <p>ツールを実際に運用していくなかで、<strong>セキュリティ面でいくつかの問題点</strong>に気づきました。具体的な実装内容はセキュリティ上の理由から非公開ですが、対策した領域と考え方を紹介します。</p>
+    <p>AI開発ツールのセキュリティには<strong>2種類のリスク</strong>があります。どちらか一方だけでは守れない穴が残ります。</p>
+
+    <!-- 2層の防御ビジュアル -->
+    <div style="border:2px dashed #d1d5db;border-radius:16px;padding:20px;margin:20px 0;background:#fafafa;text-align:center;">
+      <div style="font-size:11px;color:#9ca3af;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">SECURITY MODEL</div>
+      <div style="border:2px solid #f59e0b;border-radius:12px;padding:16px 20px;background:#fffbeb;margin-bottom:6px;">
+        <div style="font-weight:700;color:#92400e;font-size:14px;margin-bottom:4px;">🛠 第2層：作ったツール・アプリを守る</div>
+        <div style="font-size:12px;color:#b45309;">APIキー管理 ／ サーバー設定 ／ 認証 ／ パッケージ管理</div>
+        <div style="border:2px solid #22c55e;border-radius:8px;padding:12px 16px;background:#f0fdf4;margin-top:10px;">
+          <div style="font-weight:700;color:#15803d;font-size:14px;margin-bottom:4px;">🤖 第1層：Claude Codeの動作を制御する</div>
+          <div style="font-size:12px;color:#16a34a;">サンドボックス ／ 禁止コマンド ／ 通信制限 ／ リスク説明</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#9ca3af;">第1層が突破されても第2層が守る。第2層が崩れても第1層が防ぐ。</div>
+    </div>
+
+    <!-- どこから始めるか -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:20px 0 28px;">
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:4px;">🚀 Claude Codeを使い始めたら</div>
+        <div style="font-size:13px;color:#1e40af;font-weight:600;">まず第1層から（約10分）</div>
+        <div style="font-size:12px;color:#3b82f6;margin-top:3px;">設定ファイルの変更だけで完了</div>
+      </div>
+      <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:#92400e;margin-bottom:4px;">🛠 ツールを運用するなら</div>
+        <div style="font-size:13px;color:#78350f;font-weight:600;">第2層も追加（さらに約20分）</div>
+        <div style="font-size:12px;color:#d97706;margin-top:3px;">コード修正と設定変更が必要</div>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:#15803d;margin-bottom:4px;">🔄 使い続けるなら</div>
+        <div style="font-size:13px;color:#14532d;font-weight:600;">月1回のメンテナンスも</div>
+        <div style="font-size:12px;color:#16a34a;margin-top:3px;">コマンド1本で現状確認できる</div>
+      </div>
+    </div>
+
+    <!-- 第1層 -->
+    <h3 style="font-size:16px;font-weight:bold;margin:0 0 4px;color:#15803d;">🤖 第1層：Claude Codeの動作を制御する</h3>
+    <p style="font-size:13px;color:#6b7280;margin:0 0 14px;">Claude Code自体が誤操作・攻撃に使われないよう手綱を握る設定。<strong>まずここから始める。</strong></p>
+
+    <div style="overflow-x:auto;margin:0 0 12px;">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead>
+          <tr style="background:#f0fdf4;">
+            <th style="padding:9px 12px;text-align:left;border-bottom:2px solid #bbf7d0;color:#15803d;font-weight:600;">設定内容</th>
+            <th style="padding:9px 12px;text-align:left;border-bottom:2px solid #bbf7d0;color:#15803d;font-weight:600;">目的</th>
+            <th style="padding:9px 12px;text-align:left;border-bottom:2px solid #bbf7d0;color:#15803d;font-weight:600;">状態</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;font-weight:600;">サンドボックス有効化＋封鎖</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;color:#6b7280;">作業フォルダ外への操作を物理的に制限</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;"><span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">✓ 完了</span></td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;font-weight:600;">危険コマンドの拒否リスト</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;color:#6b7280;">取り返しのつかない操作を絶対に禁止</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;"><span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">✓ 完了</span></td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;font-weight:600;">パスワードファイルの読み取り禁止</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;color:#6b7280;">プロンプトインジェクション攻撃への対策</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;"><span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">✓ 完了</span></td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;font-weight:600;">通信先を許可ドメインのみに制限</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;color:#6b7280;">データが外部サーバーに漏れるのを防ぐ</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;"><span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">✓ 完了</span></td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;font-weight:600;">操作前リスク説明ルール</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;color:#6b7280;">AIが日本語で内容を説明してから実行</td><td style="padding:8px 12px;border-bottom:1px solid #f0fdf4;"><span style="background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">✓ 完了</span></td></tr>
+          <tr><td style="padding:8px 12px;font-weight:600;">月1回の権限棚卸し</td><td style="padding:8px 12px;color:#6b7280;">知らないうちに増えた許可を定期リセット</td><td style="padding:8px 12px;"><span style="background:#fef9c3;color:#92400e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;">△ 月次運用</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:0;"><strong style="color:#333;">サンドボックス</strong>で作業範囲を絞り、<strong style="color:#333;">禁止リスト</strong>でやってはいけない操作をゼロにします。パスワードファイルの読み取り禁止と通信先制限はセットで、仮に攻撃を受けてもデータが外に出ない二重壁になります。</p>
+
+    <!-- 第2層 -->
+    <h3 style="font-size:16px;font-weight:bold;margin:36px 0 4px;color:#92400e;">🛠 第2層：作ったツール・アプリを守る</h3>
+    <p style="font-size:13px;color:#6b7280;margin:0 0 14px;">Claude Codeで作ったアプリ自体のセキュリティ対策。完成品を運用するなら第1層に加えてこちらも必須。</p>
 
     <div class="flow-code">
       ⚠️ 運用して気づいた失敗パターン<br>
@@ -1058,7 +1120,7 @@
       ダッシュボードに認証なし → 同じネットワークの端末から操作できる状態だった
     </div>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">① APIキーをプロジェクト外で一元管理</h3>
+    <h3 style="font-size:15px;font-weight:bold;margin:24px 0 8px;color:#111;">① APIキーをプロジェクト外で一元管理</h3>
     <p>複数ツールで利用するAPIキーが各プロジェクトフォルダに分散していたため、<strong>プロジェクトとは別の安全な場所にまとめて管理する構成に変更しました。</strong></p>
     <ul>
       <li>プロジェクトフォルダ内には、そのツール固有の設定値のみを残す構成にしています</li>
@@ -1066,22 +1128,32 @@
       <li>保存先にはOSレベルのアクセス制限を設けています</li>
     </ul>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">② ローカルサーバーの外部アクセスを遮断</h3>
+    <h3 style="font-size:15px;font-weight:bold;margin:24px 0 8px;color:#111;">② ローカルサーバーの外部アクセスを遮断</h3>
     <p>ダッシュボードのサーバーがデフォルト設定のままで、<strong>同じネットワーク上の別端末からアクセスできる状態</strong>でした。サーバーの待ち受け設定を変更し、ローカルからの接続のみ受け付けるよう修正しています。</p>
-    <p style="font-size:13px; color:#888;">※ 設定変更はサーバー起動コード1行で実現できます。管理者権限も不要です。</p>
+    <p style="font-size:13px;color:#888;">※ 設定変更はサーバー起動コード1行で実現できます。管理者権限も不要です。</p>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">③ ダッシュボードにアクセス認証を追加</h3>
+    <h3 style="font-size:15px;font-weight:bold;margin:24px 0 8px;color:#111;">③ ダッシュボードにアクセス認証を追加</h3>
     <p>起動・停止・設定変更ができるダッシュボードが<strong>認証なしで操作できる状態</strong>でした。パスワード認証を導入し、認証情報はプロジェクト外で管理する構成にしています。</p>
 
-    <h3 style="font-size:17px; font-weight:bold; margin:28px 0 12px; color:#111;">④ 依存パッケージの脆弱性チェックを定期実施</h3>
+    <h3 style="font-size:15px;font-weight:bold;margin:24px 0 8px;color:#111;">④ 依存パッケージの脆弱性チェックを定期実施</h3>
     <p>利用しているライブラリに既知の脆弱性が発見されることがあるため、定期的にチェックするコマンドを実行しています。ツールごとに対応するコマンドが用意されています。</p>
 
-    <div style="background:#FFF8E1; border-left:4px solid #F59E0B; border-radius:4px; padding:16px 20px; margin:24px 0;">
-      <p style="margin:0; font-size:14px; color:#78350F;">
-        <strong>💡 対策のポイント</strong><br>
-        ① APIキーをプロジェクト外で一元管理　② サーバーの外部アクセスを遮断　③ 操作画面に認証を追加　④ パッケージ脆弱性を定期チェック<br>
-        いずれも「設定ミスや意図しない公開状態」をなくすことが目的で、個人開発レベルのリスクはこの4つでほぼカバーできています。
-      </p>
+    <!-- 統合サマリー -->
+    <div style="background:#1e293b;border-radius:12px;padding:20px 24px;margin:32px 0;color:#e2e8f0;">
+      <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">✅ 対策サマリー</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-size:12px;color:#4ade80;font-weight:700;margin-bottom:8px;">🤖 第1層（Claude Code制御）</div>
+          <div style="font-size:13px;color:#94a3b8;line-height:2;">サンドボックス＋封鎖 ✓<br>危険コマンドブロック ✓<br>パスワード読み取り禁止 ✓<br>通信先制限 ✓<br>リスク説明ルール ✓<br>月次権限棚卸し △</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:#fbbf24;font-weight:700;margin-bottom:8px;">🛠 第2層（ツール・アプリ保護）</div>
+          <div style="font-size:13px;color:#94a3b8;line-height:2;">APIキー一元管理 ✓<br>サーバー外部遮断 ✓<br>ダッシュボード認証 ✓<br>パッケージ脆弱性チェック △</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#475569;margin-top:14px;padding-top:14px;border-top:1px solid #334155;">
+        2層とも対策済みで、個人・小規模運用レベルのリスクはほぼカバーできています。
+      </div>
     </div>
   </div>
 

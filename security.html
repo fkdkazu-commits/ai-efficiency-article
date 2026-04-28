@@ -455,8 +455,39 @@
 
 <main>
 
-  <!-- 実施済み対策 -->
-  <h2 class="section-title">✅ 実施済みセキュリティ対策</h2>
+  <!-- 2層の防御 全体マップ -->
+  <div style="background:linear-gradient(135deg,#0f2942,#1e293b);border:1px solid #2d3f55;border-radius:16px;padding:28px 32px;margin-bottom:40px;">
+    <div style="font-size:11px;font-weight:700;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:20px;">SECURITY MODEL — 2層の防御</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:12px;padding:18px;">
+        <div style="font-size:13px;font-weight:700;color:#4ade80;margin-bottom:8px;">🤖 第1層：Claude Code動作制御</div>
+        <div style="font-size:12px;color:#6ee7b7;line-height:1.9;">開発ツール自体の手綱を握る<br>サンドボックス / 禁止コマンド<br>通信制限 / リスク説明ルール</div>
+        <div style="margin-top:10px;font-size:11px;color:#4ade80;">→ 詳細は下の「Claude Codeセキュリティ設定」</div>
+      </div>
+      <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:12px;padding:18px;">
+        <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:8px;">🛠 第2層：ツール・アプリ保護</div>
+        <div style="font-size:12px;color:#fde68a;line-height:1.9;">完成品を外部脅威から守る<br>APIキー管理 / サーバー設定<br>認証 / パッケージ管理</div>
+        <div style="margin-top:10px;font-size:11px;color:#fbbf24;">→ 詳細は下の「実施済みセキュリティ対策」</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:4px;">🚀 Claude Codeを使い始めたら</div>
+        <div style="font-size:12px;color:#cbd5e1;">まず<strong style="color:#4ade80;">第1層</strong>から（約10分）</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:4px;">🛠 ツールを運用するなら</div>
+        <div style="font-size:12px;color:#cbd5e1;"><strong style="color:#fbbf24;">第2層</strong>も追加（さらに約20分）</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;margin-bottom:4px;">🔄 使い続けるなら</div>
+        <div style="font-size:12px;color:#cbd5e1;">月1回の<strong style="color:#94a3b8;">メンテナンス</strong>も</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 実施済み対策（第2層） -->
+  <h2 class="section-title">🛠 第2層：実施済みセキュリティ対策</h2>
   <div class="measures-grid">
 
     <!-- 対策1: APIキー一元管理 -->
@@ -727,6 +758,308 @@
       </tbody>
     </table>
   </div>
+
+</main>
+
+  <!-- Claude Codeセキュリティ設定（第1層） -->
+  <h2 class="section-title">🤖 第1層：Claude Codeセキュリティ設定</h2>
+  <p style="font-size:14px;color:#94a3b8;line-height:1.8;margin-bottom:24px;">
+    Claude Codeはターミナル経由でPC内のファイルを直接操作できる強力なAIツール。
+    チャット型AIとは異なり、設定なしで使い続けることはファイル削除・データ漏洩などのリスクを自分で引き受けることになる。
+    以下は実際に <code>settings.local.json</code> と <code>CLAUDE.md</code> に追加したセキュリティ設定の記録。
+  </p>
+
+  <!-- サマリーテーブル -->
+  <div style="background:#1e293b;border:1px solid #2d3f55;border-radius:12px;overflow:hidden;margin-bottom:32px;">
+    <table class="compare-table" style="margin:0;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>設定内容</th>
+          <th>設定方法</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>サンドボックス有効化（作業フォルダ外に出たら確認）</td>
+          <td><code>sandbox.enabled</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>サンドボックスの抜け道を塞ぐ</td>
+          <td><code>allowUnsandboxedCommands: false</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>危険コマンドを拒否リストでブロック</td>
+          <td><code>permissions.deny</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>.envファイルの読み取りをブロック</td>
+          <td><code>permissions.deny</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>ネット接続先を許可ドメインのみに制限</td>
+          <td><code>sandbox.network.allowedDomains</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>CLAUDE.mdにリスク表示ルールを追記</td>
+          <td><code>CLAUDE.md</code></td>
+          <td><span class="status-badge status-done">✓ 完了</span></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>月1回の権限棚卸し（<code>/permissions</code>）</td>
+          <td>運用習慣</td>
+          <td><span class="status-badge status-pending">△ 運用で対応</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 詳細カード -->
+  <div class="measures-grid">
+
+    <!-- 設定1 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-green">📦</div>
+        <div class="measure-title-area">
+          <h3>設定1：サンドボックス有効化</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          Claude Codeがパソコン全体を自由に操作できる状態から、作業フォルダ内だけに範囲を絞る仕組み。
+          確認画面の連打（証人疲れ）を防ぎ、本当に注意が必要な操作だけ確認が出るようになる。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">settings.local.json に追加した設定</div>
+          <ul>
+            <li><code>"sandbox": &#123; "enabled": true &#125;</code> でサンドボックスを有効化</li>
+            <li><code>"autoAllowBashIfSandboxed": true</code> で作業フォルダ内は確認なしで自動許可</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">効果</div>
+          <ul>
+            <li>Anthropic社内テストでは確認画面が84%減少</li>
+            <li>フォルダ外に出ようとした時だけ確認が出るため見落としがなくなる</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定2 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-blue">🚧</div>
+        <div class="measure-title-area">
+          <h3>設定2：サンドボックスの抜け道を塞ぐ</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          設定1のサンドボックスには「ここでは動かないのでフォルダの外に出ます」と
+          Claude Codeが自ら申告して外に出られる抜け道がある。
+          <code>allowUnsandboxedCommands: false</code> でその選択肢自体をなくす。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">settings.local.json に追加した設定</div>
+          <ul>
+            <li><code>"allowUnsandboxedCommands": false</code></li>
+            <li>確認画面すら出ずに問答無用でブロック</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">設定1との関係</div>
+          <ul>
+            <li>設定1 = 作業フォルダに囲いを作る</li>
+            <li>設定2 = その囲いから出られないようにする</li>
+            <li>2つセットで初めて完成する設定</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定3 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-purple">🚫</div>
+        <div class="measure-title-area">
+          <h3>設定3：危険コマンドの拒否リスト</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          どれだけYesを連打しても、拒否リストのコマンドは絶対に実行されない。
+          エンジニアでなくても「AIが勝手に判断して実行したら致命的なもの」を5種類厳選してブロック。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">ブロック対象コマンド（permissions.deny に追加）</div>
+          <ul>
+            <li><code>rm -rf *</code> / <code>rm -r *</code> — ファイルの再帰的削除</li>
+            <li><code>sudo *</code> — 管理者権限への昇格</li>
+            <li><code>chmod *</code> / <code>chown *</code> — ファイル権限・所有者の変更</li>
+            <li><code>dd *</code> — ディスクレベルの直接書き込み</li>
+            <li><code>git push --force*</code> / <code>git push -f *</code> — 強制プッシュ</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">サンドボックスとの使い分け</div>
+          <ul>
+            <li>サンドボックス = どこで作業するかの制限（場所）</li>
+            <li>拒否リスト = 何をやらせないかの制限（行動）</li>
+            <li>場所と行動の両面からガードをかける</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定4 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-orange">🔑</div>
+        <div class="measure-title-area">
+          <h3>設定4：.envファイルの読み取りブロック</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          Claude Codeが読み込む外部コードに「.envの中身を外部サーバーに送れ」という命令が
+          こっそり仕込まれていた場合（プロンプトインジェクション攻撃）、
+          .envファイル自体を読めないようにすることでパスワード・APIキーの漏洩を防ぐ。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">permissions.deny に追加したルール</div>
+          <ul>
+            <li><code>Read(**/.env)</code> — .env ファイルの読み取りを禁止</li>
+            <li><code>Read(**/.env.*)</code> — .env.local / .env.production 等も同様に禁止</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">なぜ必要か</div>
+          <ul>
+            <li>Claude Code自体が悪さをするわけではない</li>
+            <li>外部から読み込んだコードに悪意ある命令が仕込まれるリスクへの対策</li>
+            <li>読み込み自体を禁止すれば攻撃が成立しない</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定5 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-green">🌐</div>
+        <div class="measure-title-area">
+          <h3>設定5：ネット接続先を許可ドメインのみに制限</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          設定4でパスワードファイルを読めなくした上で、さらに仮に読まれてもデータの送り先自体をブロックする二重の守り。
+          許可ドメインへの通信は確認なしで通り、それ以外は確認が出るようになる。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">sandbox.network.allowedDomains に登録したドメイン</div>
+          <ul>
+            <li><code>github.com</code> / <code>api.github.com</code> — ソースコード管理</li>
+            <li><code>raw.githubusercontent.com</code> — GitHub Rawファイル取得</li>
+            <li><code>api.anthropic.com</code> — Claude API</li>
+            <li><code>pypi.org</code> / <code>files.pythonhosted.org</code> — Pythonパッケージ</li>
+            <li><code>npmjs.org</code> / <code>registry.npmjs.org</code> — npmパッケージ</li>
+            <li><code>yarnpkg.com</code> — Yarnパッケージ</li>
+            <li><code>www.lancers.jp</code> — 業務利用サイト</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定6 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-blue">📋</div>
+        <div class="measure-title-area">
+          <h3>設定6：CLAUDE.mdにリスク表示ルールを追記</h3>
+          <span class="status-badge status-done">✓ 実施済み</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          Claude Codeは作業開始時に毎回CLAUDE.mdを読む。ここに「操作前にリスクを数字で示し、
+          日本語で何をしようとしているか説明してから確認を求めること」というルールを書いておく。
+          「ただ実行していいですか」と聞かれるのとは判断のしやすさがまるで違う。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">CLAUDE.md に追加したルール（概要）</div>
+          <ul>
+            <li>取り返しのつく可能性がある操作の前に日本語で内容を説明</li>
+            <li>データ漏洩リスク・ファイル削除リスク・外部送信リスクをパーセントで提示</li>
+            <li>確認後に実行する</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">1〜5との組み合わせ</div>
+          <ul>
+            <li>設定1〜5 = 物理的にブロックする「壁」</li>
+            <li>設定6 = Claude Code自身の判断力を底上げする「知恵」</li>
+            <li>リストに入れ忘れた操作や想定外のパターンへの最後の砦</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 設定7 -->
+    <div class="measure-card">
+      <div class="measure-header">
+        <div class="measure-icon icon-orange">🗓</div>
+        <div class="measure-title-area">
+          <h3>設定7：月1回の権限棚卸し</h3>
+          <span class="status-badge status-pending">△ 運用で対応</span>
+        </div>
+      </div>
+      <div class="measure-body">
+        <p>
+          設定1〜6で作った守りの上から、使い続けることで「今後も許可」がどんどん積み上がっていく。
+          月1回 <code>/permissions</code> コマンドで現在の権限一覧を確認し、
+          意図せず許可されたルールがあれば削除する習慣をつける。
+        </p>
+        <div class="measure-detail">
+          <div class="measure-detail-title">実施方法</div>
+          <ul>
+            <li>Claude Codeで <code>/permissions</code> と入力</li>
+            <li>表示された一覧の中に「許可した覚えのないもの」がないか確認</li>
+            <li>不要なものはその場で削除できる</li>
+          </ul>
+        </div>
+        <div class="measure-detail" style="margin-top:8px;">
+          <div class="measure-detail-title">補足</div>
+          <ul>
+            <li>設定ファイルの正体は <code>settings.local.json</code> の1ファイルだけ</li>
+            <li>全リセットしたい場合はこのファイルを削除するだけで元通り</li>
+            <li>大事なデータを扱う時だけ設定を入れる使い分けも可能</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /measures-grid -->
 
 </main>
 
