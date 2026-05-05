@@ -19,155 +19,145 @@
 
   /* ===== ヒーローセクション ===== */
   .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    padding: 80px 40px 100px;
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+      linear-gradient(
+        to right,
+        rgba(4, 8, 20, 0.92) 0%,
+        rgba(4, 8, 20, 0.82) 50%,
+        rgba(4, 8, 20, 0.60) 100%
+      ),
+      url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1600&q=80')
+      center / cover no-repeat;
   }
-  .hero::before {
-    content: '';
+  /* 右側の巨大透かし装飾 */
+  .hero-deco {
     position: absolute;
-    top: -80px; right: -80px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
-    border-radius: 50%;
-  }
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -2px; left: 0; right: 0;
-    height: 60px;
-    background: #f8f7ff;
-    clip-path: ellipse(55% 100% at 50% 100%);
-  }
-  .hero-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    position: relative;
+    right: -40px; top: 50%;
+    transform: translateY(-50%);
+    font-size: clamp(280px, 38vw, 560px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+    -webkit-text-stroke: 1.5px rgba(120, 160, 255, 0.13);
+    color: transparent;
     z-index: 1;
   }
-  .hero-tag {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 5px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.35);
-    margin-bottom: 20px;
-    letter-spacing: 0.05em;
-  }
-  .article-title {
-    font-size: clamp(24px, 3.5vw, 40px);
-    font-weight: 900;
-    line-height: 1.4;
-    color: #fff;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.15);
-    margin-bottom: 24px;
-  }
-  .hero-intro {
-    font-size: 15px;
-    color: rgba(255,255,255,0.88);
-    line-height: 1.9;
-    max-width: 680px;
-  }
-  .hero-intro strong {
-    color: #fb923c;
-    font-weight: 900;
-  }
-  /* ===== Hero Visual ===== */
-  .hero-visual {
-    margin: 0 auto 32px;
-    max-width: 880px;
-    background:
-      radial-gradient(ellipse at 60% 40%, #2B7FC0 0%, #1A5F9E 20%, #123E6B 45%, #0D2F5B 65%, #0D1F39 85%, #0D1B31 100%);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 40px 48px;
-    text-align: center;
-    box-shadow: 0 0 0 1px rgba(251,146,60,0.15), 0 24px 60px rgba(0,0,0,0.4);
-  }
-  .hv-badges {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 28px;
-  }
-  .hv-badge {
-    font-size: 12px;
-    font-weight: 700;
-    padding: 5px 14px;
-    border-radius: 20px;
-  }
-  .hv-badge-claude { background: rgba(251,146,60,0.18); border: 1px solid rgba(251,146,60,0.5); color: #fb923c; }
-  .hv-badge-update { background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.45); color: #4ade80; }
-  .hv-badge-dark   { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.55); }
-  .hv-title { margin-bottom: 16px; }
-  .hv-title-sm {
-    font-size: clamp(16px, 2vw, 20px);
-    color: rgba(255,255,255,0.75);
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-  .hv-title-main {
-    font-size: clamp(44px, 8vw, 72px);
-    font-weight: 900;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #ffffff 0%, #5EC8FF 50%, #2B7FC0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(94,200,255,0.4));
-  }
-  .hv-title-sub {
-    font-size: clamp(28px, 4.5vw, 48px);
-    font-weight: 900;
-    line-height: 1.3;
-    margin-top: 4px;
-    background: linear-gradient(135deg, #ffffff 0%, #5EC8FF 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hv-sep { width: 48px; height: 3px; background: #fb923c; border-radius: 2px; margin: 20px auto; }
-  .hv-subtitle {
-    font-size: 14px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.9;
-    margin-bottom: 24px;
-    text-align: center;
-  }
-  .hv-features { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; }
-  .hv-feature {
-    font-size: 13px;
-    font-weight: 700;
-    padding: 7px 18px;
-    border-radius: 24px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.8);
-  }
-  .hv-author {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    width: 100%;
-    justify-content: center;
-  }
-  .hv-author-icon {
-    width: 34px; height: 34px;
-    background: #fb923c;
+  /* 左グロー */
+  .hero-glow {
+    position: absolute;
+    top: 20%; left: -120px;
+    width: 460px; height: 460px;
+    background: radial-gradient(circle, rgba(50, 90, 200, 0.12), transparent 65%);
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
+    pointer-events: none;
+    z-index: 1;
   }
-  .hv-author-name { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 72px 140px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+  .hero-caption {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(160, 185, 255, 0.65);
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+  }
+  .hero-title {
+    font-size: clamp(36px, 5.5vw, 72px);
+    font-weight: 900;
+    line-height: 1.22;
+    color: #fff;
+    letter-spacing: -0.025em;
+    margin-bottom: 32px;
+  }
+  .hero-title .line2 { color: rgba(255,255,255,0.88); }
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(200, 215, 255, 0.65);
+    line-height: 2;
+    margin-bottom: 44px;
+    max-width: 520px;
+  }
+  .hero-sub strong { color: rgba(200, 215, 255, 0.95); font-weight: 700; }
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-badge {
+    font-size: 12px; font-weight: 600;
+    padding: 6px 16px; border-radius: 4px; letter-spacing: 0.04em;
+  }
+  .badge-blue  { background: rgba(70,110,255,0.18); border: 1px solid rgba(70,110,255,0.38); color: #7da4ff; }
+  .badge-green { background: rgba(34,197,94,0.10);  border: 1px solid rgba(34,197,94,0.32);  color: #4ade80; }
+  .badge-dim   { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); color: rgba(190,210,255,0.65); }
+  /* scroll インジケーター */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 100px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 4;
+    color: rgba(180, 200, 255, 0.4);
+    font-size: 11px; font-weight: 400; letter-spacing: 0.15em;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, rgba(180,200,255,0.4), transparent);
+    animation: scroll-drop 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-drop {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    40%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    80%  { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+    100% { opacity: 0; }
+  }
+  /* マーキー */
+  .marquee-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 3;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: rgba(4, 8, 20, 0.6);
+    backdrop-filter: blur(6px);
+  }
+  .marquee-row {
+    display: flex; padding: 12px 0; white-space: nowrap; overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .marquee-row:last-child { border-bottom: none; }
+  .marquee-track {
+    display: flex;
+    animation: marquee-left 32s linear infinite;
+    will-change: transform;
+  }
+  .marquee-row:nth-child(2) .marquee-track {
+    animation-direction: reverse; animation-duration: 40s;
+  }
+  @keyframes marquee-left {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-item {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0 30px; font-size: 12px; font-weight: 400;
+    color: rgba(160, 185, 255, 0.45); white-space: nowrap; letter-spacing: 0.02em;
+  }
+  .marquee-dot {
+    width: 4px; height: 4px;
+    background: rgba(100, 140, 255, 0.6);
+    border-radius: 50%; flex-shrink: 0;
+  }
 
   /* ===== メインコンテンツ ===== */
   .article {
@@ -373,10 +363,9 @@
   @media (max-width: 640px) {
     body { overflow-x: hidden; }
     table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .hero { padding: 32px 16px 60px; }
-    .hero-visual { padding: 24px 20px; border-radius: 16px; margin-bottom: 24px; }
-    .hv-badges { gap: 6px; margin-bottom: 16px; }
-    .hv-badge { font-size: 11px; padding: 4px 10px; }
+    .hero-inner { padding: 80px 24px 120px; }
+    .hero-deco { font-size: 220px; right: -20px; }
+    .scroll-indicator { bottom: 80px; }
     .hv-title { margin-bottom: 10px; }
     .hv-title-main { font-size: 36px; letter-spacing: -0.01em; }
     .hv-title-sub { font-size: 26px; }
@@ -413,51 +402,79 @@
 <body>
 
 <header class="hero">
-  <div class="hero-inner">
-    <div class="hero-tag">✦ Claude Code / Copilot Studio をはじめとした AI × 業務自動化</div>
+  <div class="hero-deco">AI</div>
+  <div class="hero-glow"></div>
 
-    <div class="hero-visual">
-      <div class="hv-badges">
-        <span class="hv-badge hv-badge-claude">Claude Code</span>
-        <span class="hv-badge hv-badge-update">● 随時更新中</span>
-        <span class="hv-badge hv-badge-dark">業務自動化</span>
-        <span class="hv-badge hv-badge-dark">実例公開</span>
-      </div>
-      <div class="hv-title">
-        <div class="hv-title-main">AI業務自動化アプリ</div>
-        <div class="hv-title-sub">全部まとめ</div>
-      </div>
-      <div class="hv-sep"></div>
-      <div class="hv-subtitle">実際に毎日使っている仕組みを、フロー図付きで全公開。<br>新しいアプリができるたびに追加していきます。</div>
-      <div class="hv-features">
-        <span class="hv-feature">👤 作業時間を大幅削減</span>
-        <span class="hv-feature">🤖 AIが全工程を担当</span>
-        <span class="hv-feature">⚡ 完全自動化</span>
-      </div>
-      <div class="hv-author">
-        <div class="hv-author-icon">👤</div>
-        <div class="hv-author-name">稲田和弘 | AI/DX推進支援・SEO・YouTube・法人研修</div>
+  <div class="hero-inner">
+    <p class="hero-caption">Claude Code / Copilot Studio × AI業務自動化</p>
+
+    <h1 class="hero-title">
+      AI業務自動化アプリ<br>
+      <span class="line2">全部まとめて公開</span>
+    </h1>
+
+    <p class="hero-sub">
+      実際に毎日使っている仕組みを、フロー図付きで全公開。<br>
+      <strong>Claude Code</strong> や <strong>Copilot Studio</strong> をはじめ<br>
+      複数のAIツールを業務内容・環境・コストに合わせて使い分け、<br>
+      業務工数の削減と品質の安定化を実現してきました。
+    </p>
+
+    <div class="hero-badges">
+      <span class="hero-badge badge-blue">Claude Code</span>
+      <span class="hero-badge badge-green">● 随時更新中</span>
+      <span class="hero-badge badge-dim">業務自動化</span>
+      <span class="hero-badge badge-dim">実例公開</span>
+      <span class="hero-badge badge-dim">フロー図付き</span>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-row">
+      <div class="marquee-track">
+        <span class="marquee-item"><span class="marquee-dot"></span>採用支援AI Phase1 — 求人票・スカウト文自動生成</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>スクリーニング自動採点AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>面談メモAI構造化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>顧客育成ジャーニー設計AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>SNS投稿 自動生成ツール</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>SEOパイプライン自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Gmail × LINE 自動連携</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Gmail → カレンダー自動登録</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>採用支援AI Phase1 — 求人票・スカウト文自動生成</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>スクリーニング自動採点AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>面談メモAI構造化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>顧客育成ジャーニー設計AI</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>SNS投稿 自動生成ツール</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>SEOパイプライン自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Gmail × LINE 自動連携</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Gmail → カレンダー自動登録</span>
       </div>
     </div>
-
-  <h1 class="article-title">AIで構築した業務自動化アプリ｜Claude Code / Copilot Studio をはじめとした実運用の仕組みを公開</h1>
-
-  <div class="hero-intro">
-    「AIで業務効率化」と言われても、<br>
-    実際にどこまで自動化できるのかイメージしづらい方も多いと思います。<br><br>
-    私は、<strong>Claude Code</strong>（フルカスタム開発）や<strong>Copilot Studio + Power Automate</strong>（Microsoft 365連携）をはじめとした<br>
-    複数のAIツールを、業務内容・環境・コストに合わせて使い分けながら、<br>
-    AI自動化アプリを複数開発・運用しており、<br>
-    業務工数の削減や品質の安定化を実現してきました。<br><br>
-    本ページでは、実際に日常業務・クライアント支援で使用しているアプリについて、<br>
-    具体的な処理フローとともに公開しています。<br><br>
-    <strong>どの業務を<br>
-    どのツールで<br>
-    どこまで自動化できるのか</strong><br><br>
-    をイメージいただける内容になっています。<br><br>
-    「自社業務にも応用できるか知りたい」<br>
-    といった検討材料としてご覧ください。
-  </div>
+    <div class="marquee-row">
+      <div class="marquee-track">
+        <span class="marquee-item"><span class="marquee-dot"></span>AI役員チームで経営判断を自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>ダッシュボード自動生成</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>セキュリティ対策レポート自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>GSC × Claude SEO分析</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>作業時間を月320時間削減</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>完全自動化で品質を安定化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Claude Code × Power Automate</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Copilot Studio × Microsoft 365</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>AI役員チームで経営判断を自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>ダッシュボード自動生成</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>セキュリティ対策レポート自動化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>GSC × Claude SEO分析</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>作業時間を月320時間削減</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>完全自動化で品質を安定化</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Claude Code × Power Automate</span>
+        <span class="marquee-item"><span class="marquee-dot"></span>Copilot Studio × Microsoft 365</span>
+      </div>
+    </div>
   </div>
 </header>
 <div class="article">
