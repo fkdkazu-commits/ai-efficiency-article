@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>請求書管理システム｜AWS × Claude Vision で経理業務を完全自動化</title>
+<meta name="description" content="請求書の受領〜OCR抽出〜承認ワークフロー〜支払管理をAWSサーバーレス構成で自動化。月100件を数十時間削減した実運用システムを公開。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f0fdf4;
+  color: #1a1a2e;
+  line-height: 1.8;
+}
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #10b981 100%);
+  padding: 80px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f0fdf4;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-size: clamp(24px, 4vw, 44px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.hero h1 em { font-style: normal; color: #fbbf24; }
+.hero-sub {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255,255,255,0.88);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* ── Container ── */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 20px 80px;
+}
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 40px rgba(4,120,87,0.08);
+  border: 1px solid rgba(16,185,129,0.12);
+}
+@media (max-width: 640px) {
+  body { overflow-x: hidden; }
+  .container { padding: 32px 16px 60px; }
+  .card { padding: 24px 16px; }
+  .hero { padding: 48px 16px 80px; }
+  .pain-grid, .solution-grid, .feature-grid, .phase-grid { grid-template-columns: 1fr; }
+  .compare-table { display: block; overflow-x: auto; }
+  .tech-row { gap: 8px; }
+  .cta-card { padding: 36px 20px; }
+  .cta-btns { flex-direction: column; align-items: center; }
+  .back-link { margin-top: 20px; }
+  .arch-flow { flex-direction: column; }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #047857, #10b981) 1;
+}
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #047857, #10b981);
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.card h2 { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #1a1a2e; }
+
+p { font-size: 15px; color: #374151; margin-bottom: 14px; line-height: 1.9; }
+strong { color: #047857; font-weight: 700; }
+
+/* ── 課題 ── */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.pain-item {
+  background: linear-gradient(135deg, #fff5f5, #fce7f3);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.pain-icon { font-size: 28px; margin-bottom: 8px; }
+.pain-text { font-size: 13px; font-weight: 600; color: #374151; }
+
+/* ── 解決策 ── */
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.solution-item {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+.solution-item h4 { font-size: 14px; font-weight: 700; color: #047857; margin-bottom: 6px; }
+.solution-item p { font-size: 13px; color: #374151; margin: 0; }
+
+/* ── 機能 ── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.feature-item {
+  background: #f0fdf4;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid rgba(16,185,129,0.15);
+  text-align: center;
+}
+.feature-icon { font-size: 30px; margin-bottom: 10px; }
+.feature-title { font-size: 14px; font-weight: 700; color: #047857; margin-bottom: 6px; }
+.feature-desc { font-size: 12px; color: #6b7280; line-height: 1.6; }
+
+/* ── Arch flow ── */
+.arch-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 20px 0;
+}
+.arch-node {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid rgba(16,185,129,0.3);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #047857;
+  text-align: center;
+  white-space: nowrap;
+}
+.arch-arrow {
+  color: #10b981;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ── Tech stack ── */
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.tech-tag {
+  background: linear-gradient(135deg, rgba(4,120,87,0.08), rgba(16,185,129,0.08));
+  border: 1px solid rgba(16,185,129,0.3);
+  color: #047857;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* ── Phase grid ── */
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.phase-item {
+  background: #f0fdf4;
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 14px;
+  padding: 18px 14px;
+  position: relative;
+}
+.phase-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #10b981;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.phase-title { font-size: 13px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
+.phase-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+/* ── 比較表 ── */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.compare-table th {
+  background: linear-gradient(135deg, #047857, #10b981);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 700;
+}
+.compare-table th:first-child { border-radius: 12px 0 0 0; }
+.compare-table th:last-child { border-radius: 0 12px 0 0; }
+.compare-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:nth-child(even) td { background: #f0fdf4; }
+.check { color: #16a34a; font-weight: 700; }
+.cross { color: #dc2626; }
+
+/* ── 料金 ── */
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.price-card {
+  border-radius: 20px;
+  padding: 28px;
+  border: 2px solid;
+  position: relative;
+}
+.price-card.standard {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border-color: rgba(16,185,129,0.4);
+}
+.price-card.premium {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: rgba(4,120,87,0.5);
+}
+.price-card.full {
+  background: linear-gradient(135deg, #064e3b, #047857);
+  border-color: rgba(16,185,129,0.6);
+  color: #fff;
+}
+.price-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  color: #047857;
+}
+.price-card.full .price-label { color: rgba(255,255,255,0.7); }
+.price-name { font-size: 16px; font-weight: 900; color: #064e3b; margin-bottom: 12px; }
+.price-card.full .price-name { color: #fff; }
+.price-amount { font-size: 28px; font-weight: 900; color: #047857; margin-bottom: 4px; }
+.price-card.full .price-amount { color: #6ee7b7; }
+.price-note { font-size: 12px; color: #6b7280; margin-bottom: 16px; }
+.price-card.full .price-note { color: rgba(255,255,255,0.6); }
+.price-features { list-style: none; font-size: 13px; color: #374151; }
+.price-card.full .price-features { color: rgba(255,255,255,0.85); }
+.price-features li { padding: 4px 0; }
+.price-features li::before { content: '✓ '; color: #10b981; font-weight: 700; }
+.price-card.full .price-features li::before { color: #6ee7b7; }
+
+/* ── Extension ── */
+.ext-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.ext-item {
+  background: #f0fdf4;
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 14px;
+  padding: 18px;
+}
+.ext-icon { font-size: 22px; margin-bottom: 8px; }
+.ext-title { font-size: 13px; font-weight: 700; color: #047857; margin-bottom: 4px; }
+.ext-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+/* ── CTA ── */
+.cta-card {
+  background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #10b981 100%);
+  border-radius: 24px;
+  padding: 52px 48px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.cta-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 70%);
+  border-radius: 50%;
+}
+.cta-card h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 900;
+  margin-bottom: 12px;
+  position: relative;
+}
+.cta-card p { color: rgba(255,255,255,0.88); margin-bottom: 32px; position: relative; }
+.cta-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+}
+.btn-primary {
+  display: inline-block;
+  background: #fff;
+  color: #047857;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-secondary {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+.btn-secondary:hover { transform: translateY(-2px); }
+
+/* ── Back link ── */
+.back-link { text-align: center; margin-top: 32px; }
+.back-link a { color: #047857; font-size: 14px; font-weight: 600; text-decoration: none; }
+.back-link a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">✦ Claude Code × AWS × 経理DX</div>
+    <h1>請求書管理システム<br><em>受領〜承認〜支払管理</em>を完全自動化</h1>
+    <p class="hero-sub">
+      紙・PDF をアップロードするだけで<br>
+      <strong style="color:#fbbf24">OCRが自動抽出 → クラウド承認 → 支払管理</strong> まで一気通貫
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🧾 OCR自動抽出</span>
+      <span class="hero-badge">✅ 承認ワークフロー</span>
+      <span class="hero-badge">☁️ AWS サーバーレス</span>
+      <span class="hero-badge">🤖 Claude Vision</span>
+      <span class="hero-badge">⚡ 約2,000〜3,000円/月</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 課題 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">PROBLEM</span>
+      <h2>経理担当者が抱える課題</h2>
+    </div>
+    <p>月100件を超える請求書を手入力で処理——転記ミス・承認漏れ・支払遅延が繰り返され、経理担当者の工数が慢性的に不足しています。</p>
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="pain-icon">📋</div>
+        <div class="pain-text">Excel手入力で<br>月に数十時間を消費</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🔍</div>
+        <div class="pain-text">転記ミスによる<br>支払い誤りが発生</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🔄</div>
+        <div class="pain-text">承認ルートが属人化し<br>差戻し・漏れが多い</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">📁</div>
+        <div class="pain-text">紙の請求書管理で<br>検索・照合に時間がかかる</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解決策 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">SOLUTION</span>
+      <h2>このシステムが解決すること</h2>
+    </div>
+    <p>請求書をS3にアップロードするだけで、<strong>OCRが情報を自動抽出 → 承認者にSES/Slack通知 → 承認後は支払管理台帳に自動登録</strong>。フルサーバーレスなので月2,000〜3,000円で運用できます。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>✅ OCR自動抽出</h4>
+        <p>AWS Textract + Claude Vision が金額・取引先・支払期日・インボイス番号を自動読み取り。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ クラウド承認ワークフロー</h4>
+        <p>承認者にSES/Slackで通知。ブラウザから承認・差戻し・コメントを操作。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ 支払管理台帳の自動生成</h4>
+        <p>承認済み請求書はDynamoDBに自動登録。支払期日アラートも自動送信。</p>
+      </div>
+      <div class="solution-item">
+        <h4>✅ 月2,000〜3,000円で運用</h4>
+        <p>Lambda + S3 + DynamoDB のサーバーレス構成で、100件/月でも低コストを維持。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWSアーキテクチャ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">ARCHITECTURE</span>
+      <h2>AWSアーキテクチャ</h2>
+    </div>
+    <p>フロントエンドからバックエンドまで<strong>フルサーバーレス</strong>で構成。スケールの心配なく運用できます。</p>
+
+    <div class="arch-flow">
+      <div class="arch-node">📱 ブラウザ<br><small style="font-weight:400;color:#6b7280">React / Amplify</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🔐 Cognito<br><small style="font-weight:400;color:#6b7280">認証・認可</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🚀 API Gateway<br><small style="font-weight:400;color:#6b7280">REST API</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">⚡ Lambda<br><small style="font-weight:400;color:#6b7280">×3 関数</small></div>
+    </div>
+    <div class="arch-flow" style="margin-top:6px">
+      <div class="arch-node">🪣 S3<br><small style="font-weight:400;color:#6b7280">PDF保管</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🔍 Textract<br><small style="font-weight:400;color:#6b7280">OCR抽出</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🤖 Claude Vision<br><small style="font-weight:400;color:#6b7280">項目補完</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🗄️ DynamoDB<br><small style="font-weight:400;color:#6b7280">×3 テーブル</small></div>
+    </div>
+    <div class="arch-flow" style="margin-top:6px">
+      <div class="arch-node">📧 SES<br><small style="font-weight:400;color:#6b7280">承認メール通知</small></div>
+      <span class="arch-arrow">+</span>
+      <div class="arch-node">💬 Slack<br><small style="font-weight:400;color:#6b7280">Webhook通知</small></div>
+    </div>
+
+    <div class="tech-row" style="margin-top:24px">
+      <span class="tech-tag">AWS Amplify</span>
+      <span class="tech-tag">Amazon Cognito</span>
+      <span class="tech-tag">Amazon S3</span>
+      <span class="tech-tag">AWS Lambda (Python)</span>
+      <span class="tech-tag">Amazon API Gateway</span>
+      <span class="tech-tag">Amazon DynamoDB</span>
+      <span class="tech-tag">Amazon Textract</span>
+      <span class="tech-tag">Claude Vision (Anthropic)</span>
+      <span class="tech-tag">Amazon SES</span>
+      <span class="tech-tag">Slack Webhook</span>
+      <span class="tech-tag">React</span>
+      <span class="tech-tag">Claude Code</span>
+    </div>
+  </div>
+
+  <!-- 処理フロー -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">FLOW</span>
+      <h2>処理フロー</h2>
+    </div>
+    <p>請求書のアップロードから支払完了まで、<strong>すべて自動で進行</strong>します。人が操作するのは承認ボタンを押すだけです。</p>
+
+    <div style="display:flex;flex-direction:column;gap:0;margin-top:20px">
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">1</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">📤 請求書アップロード</div>
+          <div style="font-size:13px;color:#374151">担当者がPDF/画像をブラウザからS3へアップロード</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">2</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">🔍 OCR自動抽出（Lambda自動起動）</div>
+          <div style="font-size:13px;color:#374151">S3イベントでLambdaが起動 → Textract + Claude Vision が取引先・金額・支払期日・インボイス番号を抽出 → DynamoDBに保存</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">3</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">📧 承認依頼通知（SES + Slack）</div>
+          <div style="font-size:13px;color:#374151">承認者にメール＋Slackで通知。金額・取引先・支払期日を一覧表示</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">4</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">✅ ブラウザから承認 / 差戻し</div>
+          <div style="font-size:13px;color:#374151">承認者がダッシュボードで確認 → 承認 or 差戻し（コメント付き）。差戻しは担当者にSlack通知</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">5</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15)">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">💰 支払管理・期日アラート</div>
+          <div style="font-size:13px;color:#374151">承認済みデータは支払管理台帳に自動登録。支払期日の3日前にSES + Slack でリマインド送信</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 機能一覧 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">FEATURES</span>
+      <h2>主な機能</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-icon">🧾</div>
+        <div class="feature-title">PDF/画像 OCR抽出</div>
+        <div class="feature-desc">Textract + Claude Vision のハイブリッドで高精度な情報抽出を実現</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">✅</div>
+        <div class="feature-title">多段階承認フロー</div>
+        <div class="feature-desc">担当者 → 上長 → 経理 の承認ルートを柔軟に設定可能</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">支払管理ダッシュボード</div>
+        <div class="feature-desc">未払い・支払済み・差戻し中をステータスで一覧管理</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⏰</div>
+        <div class="feature-title">支払期日アラート</div>
+        <div class="feature-desc">期日3日前・当日をSES + Slack で自動通知</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔐</div>
+        <div class="feature-title">Cognito認証</div>
+        <div class="feature-desc">役割（担当者・承認者・経理）ごとのアクセス制御</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📁</div>
+        <div class="feature-title">S3原本保管</div>
+        <div class="feature-desc">全PDFをS3に安全保管。インボイス対応の電子保存要件を満たす</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 開発フェーズ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">DEVELOPMENT</span>
+      <h2>開発フェーズ（Claude Code で構築）</h2>
+    </div>
+    <p>ヒアリング〜納品まで<strong>Claude Code を中心に開発</strong>。要件定義・設計・実装・テスト・デプロイを一貫して対応しました。</p>
+    <div class="phase-grid">
+      <div class="phase-item">
+        <div class="phase-num">PHASE 1</div>
+        <div class="phase-title">ヒアリング → モック</div>
+        <div class="phase-desc">業務フロー確認・要件定義・ワイヤーフレーム作成</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">PHASE 2</div>
+        <div class="phase-title">AWS開発環境構築</div>
+        <div class="phase-desc">Cognito / S3 / DynamoDB / Lambda / API Gateway セットアップ</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">PHASE 3</div>
+        <div class="phase-title">開発・テスト</div>
+        <div class="phase-desc">OCRエンジン実装・承認フロー実装・フロントエンド開発・単体テスト</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">PHASE 4</div>
+        <div class="phase-title">本番環境構築</div>
+        <div class="phase-desc">Amplify デプロイ・SES/Slack設定・IAMポリシー・本番テスト</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">PHASE 5</div>
+        <div class="phase-title">納品・引き継ぎ</div>
+        <div class="phase-desc">操作マニュアル作成・担当者レクチャー・1ヶ月保守サポート</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 導入効果 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">IMPACT</span>
+      <h2>導入効果</h2>
+    </div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>導入前</th>
+          <th>導入後</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>請求書処理時間</td>
+          <td>月 数十時間（手入力）</td>
+          <td class="check">月 数時間（確認のみ）</td>
+        </tr>
+        <tr>
+          <td>転記ミス</td>
+          <td>月数件 発生</td>
+          <td class="check">ほぼゼロ（自動抽出）</td>
+        </tr>
+        <tr>
+          <td>承認フロー</td>
+          <td>紙・メール・口頭で属人化</td>
+          <td class="check">クラウド上で一元管理</td>
+        </tr>
+        <tr>
+          <td>支払期日管理</td>
+          <td>Excelで手動確認</td>
+          <td class="check">期日前に自動アラート</td>
+        </tr>
+        <tr>
+          <td>原本保管</td>
+          <td>紙ファイル / ローカル保存</td>
+          <td class="check">S3でクラウド保管（電子帳簿対応）</td>
+        </tr>
+        <tr>
+          <td>月次コスト</td>
+          <td>人件費（時間換算）</td>
+          <td class="check">約 2,000〜3,000円/月</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 拡張オプション -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">EXTENSIONS</span>
+      <h2>拡張オプション</h2>
+    </div>
+    <p>基本システムに追加して、経理業務をさらに自動化できるオプション機能です。</p>
+    <div class="ext-grid">
+      <div class="ext-item">
+        <div class="ext-icon">💳</div>
+        <div class="ext-title">支払自動化</div>
+        <div class="ext-desc">承認後に銀行API連携で振込データを自動生成</div>
+      </div>
+      <div class="ext-item">
+        <div class="ext-icon">🔗</div>
+        <div class="ext-title">三点照合</div>
+        <div class="ext-desc">発注書・納品書・請求書を自動突合。差異を検出してアラート</div>
+      </div>
+      <div class="ext-item">
+        <div class="ext-icon">📒</div>
+        <div class="ext-title">会計ソフト連携</div>
+        <div class="ext-desc">freee / マネーフォワード への自動仕訳インポート</div>
+      </div>
+      <div class="ext-item">
+        <div class="ext-icon">📊</div>
+        <div class="ext-title">経費精算統合</div>
+        <div class="ext-desc">交通費・出張費の経費精算フローと統合管理</div>
+      </div>
+      <div class="ext-item">
+        <div class="ext-icon">🏢</div>
+        <div class="ext-title">取引先ポータル</div>
+        <div class="ext-desc">取引先が請求書を直接アップロードできる外部ポータル</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 料金 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">PRICING</span>
+      <h2>ご依頼・料金の目安</h2>
+    </div>
+    <p>業務規模・必要機能に応じて柔軟にご提案します。まずはヒアリングからお気軽にご相談ください。</p>
+    <div class="price-grid">
+      <div class="price-card standard">
+        <div class="price-label">STANDARD</div>
+        <div class="price-name">スタンダード</div>
+        <div class="price-amount">〜150万円</div>
+        <div class="price-note">※規模・要件により変動</div>
+        <ul class="price-features">
+          <li>OCR抽出（Textract + Claude Vision）</li>
+          <li>承認ワークフロー（2段階）</li>
+          <li>支払管理ダッシュボード</li>
+          <li>SES / Slack 通知</li>
+          <li>Cognito 認証</li>
+        </ul>
+      </div>
+      <div class="price-card premium">
+        <div class="price-label">PREMIUM</div>
+        <div class="price-name">プレミアム</div>
+        <div class="price-amount">〜250万円</div>
+        <div class="price-note">※拡張機能込み</div>
+        <ul class="price-features">
+          <li>スタンダード機能すべて</li>
+          <li>三点照合（発注・納品・請求）</li>
+          <li>会計ソフト連携</li>
+          <li>経費精算統合</li>
+          <li>多段階承認（3段階以上）</li>
+        </ul>
+      </div>
+      <div class="price-card full">
+        <div class="price-label">FULL PACKAGE</div>
+        <div class="price-name">経理DX完全版</div>
+        <div class="price-amount">〜350万円</div>
+        <div class="price-note">※取引先ポータル込み</div>
+        <ul class="price-features">
+          <li>プレミアム機能すべて</li>
+          <li>取引先ポータル</li>
+          <li>支払自動化（銀行API連携）</li>
+          <li>カスタム分析レポート</li>
+          <li>1年間の保守サポート</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:#6b7280;text-align:center">※ AWSランニングコストは別途（目安: 100件/月 で約 2,000〜3,000円）</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h2>経理業務の自動化を相談する</h2>
+    <p>
+      現在の業務フローをヒアリングし、<br>
+      最適なシステム構成と費用をご提案します。<br>
+      まずは無料相談からお気軽にどうぞ。
+    </p>
+    <div class="cta-btns">
+      <a href="index.html" class="btn-secondary">← 記事トップに戻る</a>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← AI業務自動化アプリ一覧に戻る</a>
+  </div>
+
+</div>
+</body>
+</html>
