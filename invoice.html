@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>請求書管理システム｜AWS × Claude Vision で経理業務を完全自動化</title>
+<title>請求書管理システム｜AWS × OCR自動抽出で経理業務を完全自動化</title>
 <meta name="description" content="請求書の受領〜OCR抽出〜承認ワークフロー〜支払管理をAWSサーバーレス構成で自動化。月100件を数十時間削減した実運用システムを公開。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -424,7 +424,7 @@ strong { color: #047857; font-weight: 700; }
       <span class="hero-badge">🧾 OCR自動抽出</span>
       <span class="hero-badge">✅ 承認ワークフロー</span>
       <span class="hero-badge">☁️ AWS サーバーレス</span>
-      <span class="hero-badge">🤖 Claude Vision</span>
+      <span class="hero-badge">🤖 Textract / Claude Vision 選択式</span>
       <span class="hero-badge">⚡ 約2,000〜3,000円/月</span>
     </div>
   </div>
@@ -469,7 +469,7 @@ strong { color: #047857; font-weight: 700; }
     <div class="solution-grid">
       <div class="solution-item">
         <h4>✅ OCR自動抽出</h4>
-        <p>AWS Textract + Claude Vision が金額・取引先・支払期日・インボイス番号を自動読み取り。</p>
+        <p>OCR実行時に <strong>Textract</strong>（印刷テキスト向け）と <strong>Claude Vision</strong>（手書き対応・高精度）を選択して実行。金額・取引先・支払期日・インボイス番号を自動読み取り。</p>
       </div>
       <div class="solution-item">
         <h4>✅ クラウド承認ワークフロー</h4>
@@ -506,9 +506,9 @@ strong { color: #047857; font-weight: 700; }
     <div class="arch-flow" style="margin-top:6px">
       <div class="arch-node">🪣 S3<br><small style="font-weight:400;color:#6b7280">PDF保管</small></div>
       <span class="arch-arrow">→</span>
-      <div class="arch-node">🔍 Textract<br><small style="font-weight:400;color:#6b7280">OCR抽出</small></div>
-      <span class="arch-arrow">→</span>
-      <div class="arch-node">🤖 Claude Vision<br><small style="font-weight:400;color:#6b7280">項目補完</small></div>
+      <div class="arch-node">🔍 Textract<br><small style="font-weight:400;color:#6b7280">印刷テキスト向け</small></div>
+      <span class="arch-arrow">/</span>
+      <div class="arch-node">🤖 Claude Vision<br><small style="font-weight:400;color:#6b7280">手書き対応・高精度</small></div>
       <span class="arch-arrow">→</span>
       <div class="arch-node">🗄️ DynamoDB<br><small style="font-weight:400;color:#6b7280">×3 テーブル</small></div>
     </div>
@@ -554,7 +554,7 @@ strong { color: #047857; font-weight: 700; }
         <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">2</div>
         <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
           <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">🔍 OCR自動抽出（Lambda自動起動）</div>
-          <div style="font-size:13px;color:#374151">S3イベントでLambdaが起動 → Textract + Claude Vision が取引先・金額・支払期日・インボイス番号を抽出 → DynamoDBに保存</div>
+          <div style="font-size:13px;color:#374151">S3イベントでLambdaが起動 → <strong>Textract（印刷テキスト向け）/ Claude Vision（手書き対応）</strong>を選択してOCR実行 → 取引先・金額・支払期日・インボイス番号を抽出 → DynamoDBに保存</div>
         </div>
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start">
@@ -591,7 +591,7 @@ strong { color: #047857; font-weight: 700; }
       <div class="feature-item">
         <div class="feature-icon">🧾</div>
         <div class="feature-title">PDF/画像 OCR抽出</div>
-        <div class="feature-desc">Textract + Claude Vision のハイブリッドで高精度な情報抽出を実現</div>
+        <div class="feature-desc">OCR実行時にエンジンを選択。Textractは印刷テキスト向け、Claude Visionは手書き対応で高精度</div>
       </div>
       <div class="feature-item">
         <div class="feature-icon">✅</div>
@@ -753,10 +753,9 @@ strong { color: #047857; font-weight: 700; }
       <div class="price-card standard">
         <div class="price-label">STANDARD</div>
         <div class="price-name">スタンダード</div>
-        <div class="price-amount">〜150万円</div>
-        <div class="price-note">※規模・要件により変動</div>
+        <div class="price-note">※料金はお問い合わせください</div>
         <ul class="price-features">
-          <li>OCR抽出（Textract + Claude Vision）</li>
+          <li>OCR抽出（Textract / Claude Vision 選択式）</li>
           <li>承認ワークフロー（2段階）</li>
           <li>支払管理ダッシュボード</li>
           <li>SES / Slack 通知</li>
@@ -766,8 +765,7 @@ strong { color: #047857; font-weight: 700; }
       <div class="price-card premium">
         <div class="price-label">PREMIUM</div>
         <div class="price-name">プレミアム</div>
-        <div class="price-amount">〜250万円</div>
-        <div class="price-note">※拡張機能込み</div>
+        <div class="price-note">※料金はお問い合わせください</div>
         <ul class="price-features">
           <li>スタンダード機能すべて</li>
           <li>三点照合（発注・納品・請求）</li>
@@ -779,8 +777,7 @@ strong { color: #047857; font-weight: 700; }
       <div class="price-card full">
         <div class="price-label">FULL PACKAGE</div>
         <div class="price-name">経理DX完全版</div>
-        <div class="price-amount">〜350万円</div>
-        <div class="price-note">※取引先ポータル込み</div>
+        <div class="price-note">※料金はお問い合わせください</div>
         <ul class="price-features">
           <li>プレミアム機能すべて</li>
           <li>取引先ポータル</li>
@@ -790,7 +787,7 @@ strong { color: #047857; font-weight: 700; }
         </ul>
       </div>
     </div>
-    <p style="margin-top:20px;font-size:13px;color:#6b7280;text-align:center">※ AWSランニングコストは別途（目安: 100件/月 で約 2,000〜3,000円）</p>
+    <p style="margin-top:20px;font-size:13px;color:#6b7280;text-align:center">※ AWSランニングコストは別途。業務規模・要件をヒアリングのうえ個別にご案内します。</p>
   </div>
 
   <!-- CTA -->
