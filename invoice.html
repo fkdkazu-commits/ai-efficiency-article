@@ -414,23 +414,53 @@ strong { color: #047857; font-weight: 700; }
 <!-- Hero -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-tag">✦ Claude Code × AWS × 経理DX</div>
-    <h1>請求書管理システム<br><em>受領〜承認〜支払管理</em>を完全自動化</h1>
+    <div class="hero-tag">✦ AI-OCR × AWS × 経理DX | Claude Code 開発</div>
+    <h1>請求書を<em>AI-OCRで自動読み取り</em><br>経理業務の手入力をゼロにする</h1>
     <p class="hero-sub">
       紙・PDF をアップロードするだけで<br>
-      <strong style="color:#fbbf24">OCRが自動抽出 → クラウド承認 → 支払管理</strong> まで一気通貫
+      <strong style="color:#fbbf24">AI-OCR が金額・取引先・支払期日を自動抽出 → クラウド承認 → 支払管理</strong> まで一気通貫
     </p>
     <div class="hero-badges">
-      <span class="hero-badge">🧾 OCR自動抽出</span>
+      <span class="hero-badge">🤖 AI-OCR 自動抽出</span>
+      <span class="hero-badge">✍️ 手書き対応</span>
       <span class="hero-badge">✅ 承認ワークフロー</span>
       <span class="hero-badge">☁️ AWS サーバーレス</span>
-      <span class="hero-badge">🤖 Textract / Claude Vision 選択式</span>
       <span class="hero-badge">⚡ 約2,000〜3,000円/月</span>
     </div>
   </div>
 </div>
 
 <div class="container">
+
+  <!-- AI-OCRとは -->
+  <div class="card" style="border: 2px solid rgba(16,185,129,0.3);">
+    <div class="card-header">
+      <span class="card-badge">AI-OCR</span>
+      <h2>AI-OCRとは？従来OCRとの違い</h2>
+    </div>
+    <p>従来の OCR（光学文字認識）は印刷フォントの読み取りに特化していましたが、<strong>AI-OCR</strong> は AI が帳票の構造・意味を理解しながら文字を認識するため、手書き・複雑なレイアウト・低品質スキャンにも対応できます。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>✍️ 手書き請求書に対応</h4>
+        <p>Claude Vision（AI-OCR）は手書きや崩れた字体も高精度で読み取り。従来 OCR では難しかった帳票もカバー。</p>
+      </div>
+      <div class="solution-item">
+        <h4>📐 複雑なレイアウトを自動判定</h4>
+        <p>複数列・罫線なし・画像混在の請求書でも、AI が構造を判断して金額・取引先・日付を正確に抽出。</p>
+      </div>
+      <div class="solution-item">
+        <h4>🧾 インボイス項目を自動認識</h4>
+        <p>適格請求書番号・消費税率（8%/10%）・税額を自動判定。インボイス制度対応の記録を自動生成。</p>
+      </div>
+      <div class="solution-item">
+        <h4>📷 低品質スキャンも処理可能</h4>
+        <p>斜め・ぼけ・低解像度の PDF も AI が補正して読み取り。再スキャン・手直しの手間ゼロ。</p>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding:14px 18px;background:rgba(16,185,129,0.08);border-radius:12px;border-left:4px solid #10b981;">
+      <p style="margin:0;font-size:14px;color:#047857;font-weight:600;">💡 このシステムでは <strong>Textract</strong>（印刷テキスト向け・低コスト）と <strong>Claude Vision</strong>（手書き対応・高精度）を用途に応じて選択して利用できます。</p>
+    </div>
+  </div>
 
   <!-- 課題 -->
   <div class="card">
