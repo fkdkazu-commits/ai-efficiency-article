@@ -407,6 +407,44 @@ strong { color: #047857; font-weight: 700; }
 .back-link { text-align: center; margin-top: 32px; }
 .back-link a { color: #047857; font-size: 14px; font-weight: 600; text-decoration: none; }
 .back-link a:hover { text-decoration: underline; }
+
+/* ── Lightbox ── */
+.lb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 9999;
+  cursor: zoom-out;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  -webkit-tap-highlight-color: transparent;
+}
+.lb-overlay.active { display: flex; }
+.lb-overlay img {
+  max-width: 100%;
+  max-height: 95dvh;
+  border-radius: 8px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+  object-fit: contain;
+}
+.lb-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.zoomable { cursor: zoom-in; }
+.zoom-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 8px;
+}
 </style>
 </head>
 <body>
@@ -618,7 +656,8 @@ strong { color: #047857; font-weight: 700; }
       <h2>実際の画面</h2>
     </div>
     <p style="font-size:14px;color:#374151;margin-bottom:16px">実際に稼働中のダッシュボード画面です。請求件数・OCR自動化率・承認ステータス・月別処理件数をひと目で確認できます。</p>
-    <img src="invoice-dashboard.png" alt="InvoiceAI ダッシュボード画面" style="width:100%;border-radius:12px;box-shadow:0 4px 20px rgba(4,120,87,0.15);border:1px solid rgba(16,185,129,0.2);">
+    <img src="invoice-dashboard.png" class="zoomable" alt="InvoiceAI ダッシュボード画面" style="width:100%;display:block;border-radius:12px;box-shadow:0 4px 20px rgba(4,120,87,0.15);border:1px solid rgba(16,185,129,0.2);" onclick="openLb(this)">
+    <p class="zoom-hint">🔍 タップして拡大</p>
   </div>
 
   <!-- 機能一覧 -->
@@ -835,5 +874,22 @@ strong { color: #047857; font-weight: 700; }
   </div>
 
 </div>
+<div class="lb-overlay" id="lb" onclick="closeLb()">
+  <span class="lb-close">✕</span>
+  <img id="lb-img" src="" alt="">
+</div>
+<script>
+function openLb(el) {
+  document.getElementById('lb-img').src = el.src;
+  document.getElementById('lb-img').alt = el.alt;
+  document.getElementById('lb').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  document.getElementById('lb').classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+</script>
 </body>
 </html>
