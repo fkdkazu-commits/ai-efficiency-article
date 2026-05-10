@@ -597,6 +597,7 @@ strong { color: #047857; font-weight: 700; }
       <span class="tech-tag">Claude Vision (Anthropic)</span>
       <span class="tech-tag">Amazon SES</span>
       <span class="tech-tag">Slack Webhook</span>
+      <span class="tech-tag">freee API</span>
       <span class="tech-tag">React</span>
       <span class="tech-tag">Claude Code</span>
     </div>
@@ -641,9 +642,16 @@ strong { color: #047857; font-weight: 700; }
       </div>
       <div style="display:flex;gap:16px;align-items:flex-start">
         <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">5</div>
-        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15)">
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15);margin-bottom:10px">
           <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">💰 支払管理・期日アラート</div>
           <div style="font-size:13px;color:#374151">承認済みデータは支払管理台帳に自動登録。支払期日の3日前にSES + Slack でリマインド送信</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start">
+        <div style="min-width:32px;height:32px;background:linear-gradient(135deg,#047857,#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">6</div>
+        <div style="background:#f0fdf4;border-radius:12px;padding:14px 18px;flex:1;border:1px solid rgba(16,185,129,0.15)">
+          <div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:4px">🔗 freee 自動取引登録</div>
+          <div style="font-size:13px;color:#374151">承認完了と同時に freee API へ取引を自動送信。仕訳の手入力ゼロ・二重登録なし</div>
         </div>
       </div>
     </div>
@@ -696,6 +704,11 @@ strong { color: #047857; font-weight: 700; }
         <div class="feature-icon">📁</div>
         <div class="feature-title">S3原本保管</div>
         <div class="feature-desc">全PDFをS3に安全保管。インボイス対応の電子保存要件を満たす</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">freee 自動連携</div>
+        <div class="feature-desc">承認後に freee へ取引を自動登録。勘定科目・税区分を管理画面で設定可能</div>
       </div>
     </div>
   </div>
@@ -781,6 +794,11 @@ strong { color: #047857; font-weight: 700; }
           <td>人件費（時間換算）</td>
           <td class="check">約 2,000〜3,000円/月</td>
         </tr>
+        <tr>
+          <td>会計ソフトへの仕訳入力</td>
+          <td>承認後に手入力（freee等）</td>
+          <td class="check">承認と同時に freee へ自動登録</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -806,7 +824,7 @@ strong { color: #047857; font-weight: 700; }
       <div class="ext-item">
         <div class="ext-icon">📒</div>
         <div class="ext-title">会計ソフト連携</div>
-        <div class="ext-desc">freee / マネーフォワード への自動仕訳インポート</div>
+        <div class="ext-desc">freee 連携は実装済み（OAuth2認証・自動取引登録）。マネーフォワード等への拡張も対応可能</div>
       </div>
       <div class="ext-item">
         <div class="ext-icon">📊</div>
