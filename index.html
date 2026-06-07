@@ -792,15 +792,15 @@
       <span class="section-num" style="background:linear-gradient(135deg,#0f9960,#0d6e3d)">🆕 NEW</span>
       <h2>内部リンク構築AIエージェント</h2>
     </div>
-    <p class="section-sub">〜 SEOツールのSpreadsheetを渡すだけで、内部リンク候補をAIが自動提案 〜</p>
+    <p class="section-sub">〜 SEOデータのスプレッドシートを渡すだけで、内部リンク候補をAIが自動提案 〜</p>
     <div class="tool-row"><span class="tool-tag tool-claude">🤖 Claude Sonnet / Haiku + Google Sheets API</span></div>
 
-    <p>SEOツールから出力したSpreadsheetを読み込み、<strong>被リンク数が少ない記事</strong>に対して、関連性の高い他記事から内部リンクを設置すべき候補をAIが自動提案するツールです。Claude Sonnetが<strong>読者層・地理的一致・自然さ・トピック深度</strong>の4項目・100点満点で採点し、60点以上の記事をH〜M列に自動書き込みします。</p>
+    <p>SEOデータのスプレッドシートを読み込み、<strong>被リンク数が少ない記事</strong>に対して、関連性の高い他記事から内部リンクを設置すべき候補をAIが自動提案するツールです。Claude Sonnetが<strong>読者層・地理的一致・自然さ・トピック深度</strong>の4項目・100点満点で採点し、60点以上の記事をスプレッドシートに自動書き込みします。</p>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0">
       <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(15,153,96,0.15);text-align:center">
         <div style="font-size:24px;margin-bottom:6px">⏱️</div>
-        <div style="font-size:13px;font-weight:700;color:#065f46">231記事を約50分</div>
+        <div style="font-size:13px;font-weight:700;color:#065f46">約200記事を約50分</div>
         <div style="font-size:12px;color:#6b7280;margin-top:4px">APIモード・5並列（実績値）</div>
       </div>
       <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(15,153,96,0.15);text-align:center">
@@ -811,7 +811,7 @@
       <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(15,153,96,0.15);text-align:center">
         <div style="font-size:24px;margin-bottom:6px">🔗</div>
         <div style="font-size:13px;font-weight:700;color:#065f46">見出し位置まで特定</div>
-        <div style="font-size:12px;color:#6b7280;margin-top:4px">リンク設置箇所をH〜M列に出力</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">リンク設置箇所をスプレッドシートに出力</div>
       </div>
       <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(15,153,96,0.15);text-align:center">
         <div style="font-size:24px;margin-bottom:6px">⏸️</div>
@@ -821,21 +821,21 @@
     </div>
 
     <div class="flow-code">
-      ① SEOツールのSpreadsheet URLをCoworkに渡す<br>
+      ① SEOデータのスプレッドシートリンクをCoworkに渡す<br>
       　　　　↓<br>
-      ② 被リンク不足記事を自動抽出（H列空白）<br>
+      ② 被リンク不足かつ未処理の記事を自動抽出<br>
       　　　　↓<br>
       ③ 全記事をフェッチ・キャッシュしてインデックス構築<br>
       　　　　↓<br>
-      ④ KWスコアで候補上位20件を絞り込み<br>
+      ④ キーワードスコアで候補上位20件を絞り込み<br>
       　　　　↓<br>
       ⑤ Claude Sonnetが4項目・100点満点で採点<br>
       　　　　↓<br>
-      ⑥ 60点以上の記事URL＋見出しをH〜M列に書き込み
+      ⑥ 60点以上の記事URL＋見出しをスプレッドシートに書き込み
     </div>
 
     <div class="effects">
-      <span class="effect-badge">⏱️ 231記事を約50分で処理（APIモード実績）</span>
+      <span class="effect-badge">⏱️ 約200記事を約50分で処理（APIモード実績）</span>
       <span class="effect-badge">🎯 4項目・100点満点の均一AI採点</span>
       <span class="effect-badge">⏸️ 中断後も続きから自動再開</span>
     </div>
