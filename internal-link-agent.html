@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>内部リンク構築AIエージェント｜SEOツールのSpreadsheetを読み込み、被リンク不足記事へのリンク候補を自動提案</title>
-<meta name="description" content="SEOツールから出力したSpreadsheetを読み込み、被リンク不足記事に対して関連性の高い他記事からの内部リンク候補をAIが自動提案。Claude Sonnetが4項目・100点満点でスコアリングし、60点以上を採用。約200記事を約50分で処理。">
+<title>内部リンク構築AIエージェント｜SEOデータのスプレッドシートを読み込み、被リンク不足記事へのリンク候補を自動提案</title>
+<meta name="description" content="SEOデータのスプレッドシートを読み込み、被リンク不足記事に対して関連性の高い他記事からの内部リンク候補をAIが自動提案。Claude Sonnetが4項目・100点満点でスコアリングし、60点以上を採用。約200記事を約50分で処理。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -367,7 +367,7 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
     <div class="hero-tag">マーケティング — SEO内部リンク</div>
     <h1>内部リンク構築<em>AIエージェント</em></h1>
     <p class="hero-sub">
-      SEOツールのSpreadsheetを読み込み → 被リンク不足記事を抽出 → 関連記事をAIスコアリング → スプレッドシートへ自動出力<br>
+      SEOデータのスプレッドシートを読み込み → 被リンク不足記事を抽出 → 関連記事をAIスコアリング → スプレッドシートへ自動出力<br>
       <strong style="color:#fff">Claude Sonnetが4項目・100点満点で採点。約200記事を約50分で一括処理。</strong>
     </p>
     <div class="hero-badges">
@@ -399,7 +399,7 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
       <div class="cs-box solution">
         <div class="cs-label">After — このツールの解決策</div>
         <ul class="cs-list">
-          <li>SEOツールのSpreadsheetを渡すだけで自動処理が始まる</li>
+          <li>SEOデータのスプレッドシートを渡すだけで自動処理が始まる</li>
           <li>Claude SonnetがAI採点（100点満点・60点以上を採用）</li>
           <li>約200記事を約50分で処理（APIモード・5並列）</li>
           <li>読者層・地理・自然さ・トピック深度の4項目で均一判定</li>
@@ -422,7 +422,7 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
       <div class="feature-card">
         <div class="icon">📚</div>
         <div class="name">記事インデックスの構築</div>
-        <div class="desc">全記事のHTMLをキャッシュ。2回目以降は再取得不要で高速処理。KWスタブで候補を効率検索</div>
+        <div class="desc">全記事のHTMLをキャッシュ。2回目以降は再取得不要で高速処理。キーワードインデックスで候補を効率検索</div>
       </div>
       <div class="feature-card">
         <div class="icon">🤖</div>
@@ -441,14 +441,14 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
   <div class="section-block">
     <div class="section-label">PROCESS</div>
     <h2>5ステップの自動化フロー</h2>
-    <p>Cowork（Claude Desktop Pro）にSpreadsheetのURLを渡すだけで、以下の処理が自動実行されます。</p>
+    <p>Claude Desktop Proにスプレッドシートのリンクを渡すだけで、以下の処理が自動実行されます。</p>
     <div class="flow-wrap">
       <div class="flow-steps">
         <div class="flow-step">
           <div class="step-num">1</div>
           <div class="step-content">
             <div class="step-title">対象記事の抽出</div>
-            <div class="step-desc">Spreadsheetから被リンク不足かつ未出力の記事を処理対象として取得。出力済みの記事はすでに完了済みとしてスキップします。</div>
+            <div class="step-desc">スプレッドシートから被リンク不足かつ未処理の記事を対象として取得。処理済みの記事は自動でスキップします。</div>
             <span class="step-tool">Google Sheets API</span>
           </div>
         </div>
@@ -463,9 +463,9 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
         <div class="flow-step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <div class="step-title">KWマッチングで候補絞り込み</div>
-            <div class="step-desc">対象記事のキーワードをトークン分割し、インデックスと照合。KWスコアで上位20件を候補として選出します。AIによるキーワード上位概念拡張も実行。</div>
-            <span class="step-tool">Python（スコアリング）+ Claude Haiku（KW拡張）</span>
+            <div class="step-title">キーワードマッチングで候補絞り込み</div>
+            <div class="step-desc">対象記事のキーワードをインデックスと照合し、関連スコアが高い上位20件を候補として選出します。AIによるキーワード概念拡張も実行。</div>
+            <span class="step-tool">Python（スコアリング）+ Claude Haiku（キーワード拡張）</span>
           </div>
         </div>
         <div class="flow-step">
@@ -479,7 +479,7 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
         <div class="flow-step">
           <div class="step-num">5</div>
           <div class="step-content">
-            <div class="step-title">Spreadsheetへ出力</div>
+            <div class="step-title">スプレッドシートへ出力</div>
             <div class="step-desc">採用記事のURLとリンク設置先の見出しをスプレッドシートに書き込み。採用なしの場合は「該当なし」と記入。</div>
             <span class="step-tool">Google Sheets API</span>
           </div>
@@ -584,7 +584,7 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
       <div class="effect-card">
         <div class="effect-num">0</div>
         <div class="effect-label">手動チェック記事数</div>
-        <div class="effect-sub">Spreadsheetに結果が自動書き込み</div>
+        <div class="effect-sub">スプレッドシートに結果が自動書き込み</div>
       </div>
     </div>
   </div>
@@ -595,16 +595,16 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
     <h2>使用技術・ツール</h2>
     <div class="stack-grid">
       <span class="stack-tag">🤖 Claude Sonnet（採点）</span>
-      <span class="stack-tag">🤖 Claude Haiku（KW拡張・キャッシュ）</span>
+      <span class="stack-tag">🤖 Claude Haiku（キーワード拡張・キャッシュ）</span>
       <span class="stack-tag">🖥️ Claude Code CLI</span>
       <span class="stack-tag">🐍 Python</span>
       <span class="stack-tag">⚡ FastAPI（ローカルサーバー）</span>
       <span class="stack-tag">📊 Google Sheets API</span>
-      <span class="stack-tag">🌐 Cowork（Claude Desktop Pro）</span>
+      <span class="stack-tag">🌐 Claude Desktop Pro</span>
       <span class="stack-tag">🔗 Chrome連携</span>
     </div>
     <p style="margin-top:16px;font-size:13px;color:#6b7280">
-      Cowork（Claude Desktop Pro）がLinux VM上で動作するため、Windows上のPythonプロセスをChromeブラウザ経由でHTTP呼び出しする独自アーキテクチャを採用。ローカルのFastAPIサーバーがCoworkとWindowsプロセスを仲介します。
+      Claude Desktop ProがVM上で動作するため、ローカルのPythonプロセスをChromeブラウザ経由でHTTP連携する独自アーキテクチャを採用。FastAPIサーバーがClaude Desktop Proとローカルプロセスを仲介します。
     </p>
   </div>
 
