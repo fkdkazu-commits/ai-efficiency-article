@@ -499,6 +499,7 @@
       <li><a href="#app06"><span class="toc-badge">⑥</span>SNS投稿 自動生成ツール</a></li>
       <li><a href="#app04"><span class="toc-badge">④</span>SEO記事自動化パイプライン</a></li>
       <li><a href="#internal-link-agent"><span class="toc-badge" style="background:linear-gradient(135deg,#0f9960,#0d6e3d)">🆕</span>内部リンク構築AIエージェント</a></li>
+      <li><a href="#wp-auto-insert"><span class="toc-badge" style="background:linear-gradient(135deg,#1d4ed8,#1e40af)">🆕</span>WordPress内部リンク自動挿入ツール</a></li>
       <li><a href="#app03"><span class="toc-badge">③</span>GSCカニバリゼーション分析ツール</a></li>
       <li><a href="#app08"><span class="toc-badge">⑧</span>YouTube動画収集ツール</a></li>
     </ul>
@@ -842,6 +843,65 @@
     </div>
 
     <a href="internal-link-agent.html" style="display:inline-block;background:linear-gradient(135deg,#0f9960,#0d6e3d);color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:12px;text-decoration:none;margin-top:16px">
+      🔗 詳細ページを見る →
+    </a>
+  </div>
+
+  <hr>
+
+  <!-- WP自動挿入ツール -->
+  <div class="section" id="wp-auto-insert" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid rgba(29,78,216,0.2)">
+    <div class="section-header">
+      <span class="section-num" style="background:linear-gradient(135deg,#1d4ed8,#1e40af)">🆕 NEW</span>
+      <h2>WordPress内部リンク自動挿入ツール</h2>
+    </div>
+    <p class="section-sub">〜 承認済みリンク候補をWordPress REST APIで記事に自動書き込み。Gutenberg/Classic両対応 〜</p>
+    <div class="tool-row"><span class="tool-tag" style="background:linear-gradient(135deg,#1d4ed8,#1e40af);color:#fff">🔗 WordPress REST API + Google Sheets API</span></div>
+
+    <p>内部リンク構築AIエージェントが提案した<strong>承認済み候補</strong>を、WordPress REST APIで記事に直接挿入するツールです。Gutenberg / Classic エディタを自動判定し、指定された見出しセクションの末尾にリンクを配置します。すでにリンクが存在する場合はスキップし、SWELL ブログカード（投稿ID埋め込み）の重複も検知します。処理後はスプレッドシートのN〜P列に結果を書き戻し、再実行時に処理済み行を自動除外します。</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0">
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(29,78,216,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🔍</div>
+        <div style="font-size:13px;font-weight:700;color:#1e3a8a">エディタ自動判定</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">Gutenberg / Classic を自動識別</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(29,78,216,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">🚫</div>
+        <div style="font-size:13px;font-weight:700;color:#1e3a8a">二重挿入防止</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">raw + rendered の2重チェック</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(29,78,216,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">📋</div>
+        <div style="font-size:13px;font-weight:700;color:#1e3a8a">ステータス自動記録</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">N/O/P列に結果を書き戻し</div>
+      </div>
+      <div style="background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(29,78,216,0.15);text-align:center">
+        <div style="font-size:24px;margin-bottom:6px">⚙️</div>
+        <div style="font-size:13px;font-weight:700;color:#1e3a8a">柔軟なオプション</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:4px">--count / --row / --site 対応</div>
+      </div>
+    </div>
+
+    <div class="flow-code">
+      ① スプレッドシートのH〜M列（承認済み候補URL・見出し）を読み込み<br>
+      　　　　↓<br>
+      ② WordPress REST API で記事本文（raw + rendered）を取得<br>
+      　　　　↓<br>
+      ③ エディタ形式を自動判定（Gutenberg / Classic）<br>
+      　　　　↓<br>
+      ④ 指定見出しセクション末尾にリンクを挿入（重複チェック済み）<br>
+      　　　　↓<br>
+      ⑤ 処理結果をN/O/P列に書き戻し（次回実行時に自動スキップ）
+    </div>
+
+    <div class="effects">
+      <span class="effect-badge">🔗 Gutenberg / Classic 両対応（自動判定）</span>
+      <span class="effect-badge">🚫 SWELL ブログカード重複も検知</span>
+      <span class="effect-badge">📋 --count 分割で大量処理も安全</span>
+    </div>
+
+    <a href="wp-auto-insert.html" style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#1e40af);color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:12px;text-decoration:none;margin-top:16px">
       🔗 詳細ページを見る →
     </a>
   </div>
