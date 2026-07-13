@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI PDCA Dashboard｜マーケティング施策のPDCAを高速化するAI分析ダッシュボード</title>
+<meta name="description" content="分析→改善→実行→効果測定を一元管理し、AIが原因分析から改善提案・タスク化までつなげるマーケティングPDCAダッシュボード。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f8fafc;
+  color: #1a1a2e;
+  line-height: 1.8;
+}
+
+.hero {
+  background: linear-gradient(135deg, #0f2847 0%, #1e4080 55%, #2563a8 100%);
+  padding: 80px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f8fafc;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-size: clamp(22px, 3.5vw, 40px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.hero h1 em { font-style: normal; color: #fcd34d; }
+.hero-sub {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255,255,255,0.88);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.hero-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 60px 20px 80px; }
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 40px rgba(37,99,168,0.08);
+  border: 1px solid rgba(59,130,246,0.12);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #2563a8, #3b82f6) 1;
+}
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #2563a8, #3b82f6);
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.card h2 { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #1a1a2e; }
+
+p { font-size: 15px; color: #374151; margin-bottom: 14px; line-height: 1.9; }
+strong { color: #2563a8; font-weight: 700; }
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.solution-item {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+.solution-item h4 { font-size: 14px; font-weight: 700; color: #2563a8; margin-bottom: 6px; }
+.solution-item p { font-size: 13px; color: #374151; margin: 0; }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.feature-item {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid rgba(59,130,246,0.15);
+  text-align: center;
+}
+.feature-icon { font-size: 30px; margin-bottom: 10px; }
+.feature-title { font-size: 14px; font-weight: 700; color: #2563a8; margin-bottom: 6px; }
+.feature-desc { font-size: 12px; color: #6b7280; line-height: 1.6; }
+
+.user-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+.user-col { background: #f8fafc; border: 1px solid rgba(59,130,246,0.15); border-radius: 16px; padding: 20px 22px; }
+.user-col h4 { font-size: 13px; font-weight: 700; color: #1e3a5f; margin-bottom: 10px; }
+.user-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.user-tag { background: #fff; border: 1px solid rgba(59,130,246,0.25); color: #2563a8; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 16px; }
+
+.tech-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.tech-tag {
+  background: linear-gradient(135deg, rgba(37,99,168,0.08), rgba(59,130,246,0.08));
+  border: 1px solid rgba(59,130,246,0.3);
+  color: #2563a8;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.arch-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 20px 0; }
+.arch-node {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  border: 1px solid rgba(59,130,246,0.3);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563a8;
+  text-align: center;
+  white-space: nowrap;
+}
+.arch-arrow { color: #3b82f6; font-size: 18px; font-weight: 700; }
+
+.phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 20px; }
+.phase-item { background: #f8fafc; border: 1px solid rgba(59,130,246,0.2); border-radius: 14px; padding: 18px 14px; }
+.phase-num { font-size: 11px; font-weight: 700; color: #3b82f6; letter-spacing: 0.06em; margin-bottom: 6px; }
+.phase-title { font-size: 13px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+.phase-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+/* ===== 画面モックアップ（ブラウザ風） ===== */
+.mock-window {
+  border: 1px solid rgba(59,130,246,0.18);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-top: 20px;
+  box-shadow: 0 4px 24px rgba(37,99,168,0.08);
+}
+.mock-chrome {
+  background: #eef2f7;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(59,130,246,0.12);
+}
+.mock-dot { width: 9px; height: 9px; border-radius: 50%; background: #cbd5e1; }
+.mock-dot:nth-child(1) { background: #f87171; }
+.mock-dot:nth-child(2) { background: #fbbf24; }
+.mock-dot:nth-child(3) { background: #4ade80; }
+.mock-url { margin-left: 10px; font-size: 11px; color: #6b7280; background: #fff; padding: 3px 12px; border-radius: 8px; }
+.mock-body { background: #fbfcfe; padding: 20px; }
+
+.mock-label { font-size: 12px; font-weight: 700; color: #94a3b8; margin: 20px 0 8px; letter-spacing: 0.04em; }
+.mock-label:first-child { margin-top: 0; }
+
+/* KPIカード */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.kpi-card { background: #fff; border: 1px solid #e5edf7; border-radius: 10px; padding: 12px 14px; }
+.kpi-name { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+.kpi-val { font-size: 17px; font-weight: 900; color: #1a1a2e; }
+.kpi-diff { font-size: 11px; font-weight: 700; margin-left: 4px; }
+.kpi-up { color: #16a34a; }
+.kpi-down { color: #dc2626; }
+
+/* AI健康診断 */
+.health-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+.health-card { background: #fff; border: 1px solid #e5edf7; border-radius: 10px; padding: 12px; text-align: center; }
+.health-name { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+.health-score { font-size: 18px; font-weight: 900; }
+.health-good { color: #16a34a; }
+.health-mid { color: #d97706; }
+
+.ai-comment-box {
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 12.5px;
+  color: #374151;
+  line-height: 1.8;
+}
+.ai-comment-box .ai-tag { font-size: 11px; font-weight: 700; color: #2563a8; margin-bottom: 4px; display: block; }
+
+/* タブ */
+.tab-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tab-item { font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 8px 8px 0 0; background: #eef2f7; color: #6b7280; }
+.tab-item.active { background: #fff; color: #2563a8; border: 1px solid #e5edf7; border-bottom: 1px solid #fff; }
+
+/* 優先度テーブル */
+.priority-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #e5edf7; font-size: 12.5px; }
+.priority-table th { background: #f1f5f9; color: #475569; font-weight: 700; text-align: left; padding: 9px 12px; font-size: 11.5px; }
+.priority-table td { padding: 9px 12px; border-top: 1px solid #eef2f7; color: #374151; }
+.priority-table .star { color: #fbbf24; letter-spacing: 1px; }
+
+/* かんばん */
+.kanban-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.kanban-col { background: #fff; border: 1px solid #e5edf7; border-radius: 10px; padding: 10px; }
+.kanban-col-title { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 8px; }
+.kanban-card { background: #f8fafc; border: 1px solid #eef2f7; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: #374151; margin-bottom: 6px; }
+
+/* チャット */
+.chat-row { display: flex; flex-direction: column; gap: 10px; }
+.chat-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 12.5px; line-height: 1.7; }
+.chat-user { align-self: flex-end; background: #2563a8; color: #fff; border-bottom-right-radius: 4px; }
+.chat-ai { align-self: flex-start; background: #f1f5f9; color: #374151; border-bottom-left-radius: 4px; }
+
+/* レポート出力 */
+.report-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.report-chip { background: #fff; border: 1px solid #e5edf7; border-radius: 10px; padding: 10px 16px; font-size: 12.5px; font-weight: 700; color: #2563a8; }
+.report-chip span { display: block; font-size: 10.5px; font-weight: 600; color: #94a3b8; margin-top: 2px; }
+
+.mvp-box {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1.5px solid rgba(217,119,6,0.35);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin-top: 20px;
+}
+.mvp-box .mvp-eyebrow { font-size: 11px; font-weight: 700; color: #b45309; letter-spacing: 0.06em; margin-bottom: 10px; }
+.mvp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 14px; }
+.mvp-item { background: rgba(255,255,255,0.75); border: 1px solid rgba(217,119,6,0.2); border-radius: 10px; padding: 12px 14px; font-size: 12.5px; font-weight: 700; color: #92400e; }
+.mvp-item span { display: block; font-size: 11px; font-weight: 600; color: #b45309; margin-top: 3px; }
+
+.cta-card {
+  background: linear-gradient(135deg, #0f2847, #1e4080);
+  border-radius: 24px;
+  padding: 48px 40px;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 32px;
+}
+.cta-card h2 { font-size: 22px; font-weight: 900; margin-bottom: 12px; color: #fff; }
+.cta-card p { color: rgba(255,255,255,0.85); margin-bottom: 28px; }
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.cta-btn {
+  display: inline-block;
+  background: #fff;
+  color: #2563a8;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+.cta-btn.outline { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+
+.back-link { text-align: center; margin-top: 24px; }
+.back-link a { color: #2563a8; text-decoration: none; font-size: 14px; font-weight: 600; }
+
+@media (max-width: 640px) {
+  .container { padding: 32px 16px 60px; }
+  .card { padding: 24px 16px; }
+  .hero { padding: 48px 16px 80px; }
+  .solution-grid, .feature-grid, .phase-grid { grid-template-columns: 1fr; }
+  .kanban-row { grid-template-columns: repeat(2, 1fr); }
+  .cta-btns { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">🆕 AIマーケティング支援ツール</div>
+    <h1>分析で終わらせない。<br>AIが<em>次のアクション</em>までつなげる<br>PDCAダッシュボード</h1>
+    <p class="hero-sub">
+      売上・CV・広告・SEO・SNSのデータを一元管理し<br>
+      AIが異常検知→原因分析→改善提案→タスク化までを自動化
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">📊 KPI一元ダッシュボード</span>
+      <span class="hero-badge">🤖 AI原因分析・改善提案</span>
+      <span class="hero-badge">✅ 施策の優先順位付け</span>
+      <span class="hero-badge">🔁 ナレッジ蓄積型PDCA</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 目的 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">目的</span>
+      <h2>マーケティング施策のPDCAを高速化する</h2>
+    </div>
+    <p>分析→改善→実行→効果測定までを一元管理し、<strong>「分析して終わり」ではなく「次の一手」まで自動でつなげる</strong>ことを目的としたダッシュボードです。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>⏱️ コンサル工数50%以上削減</h4>
+        <p>データ収集・レポート作成を自動化し、分析・提案に時間を使えるようにする</p>
+      </div>
+      <div class="solution-item">
+        <h4>📐 提案品質の均一化</h4>
+        <p>担当者のスキル差によらず、一定水準の分析・改善提案を提供できる</p>
+      </div>
+      <div class="solution-item">
+        <h4>📈 データドリブンな改善</h4>
+        <p>勘や経験だけに頼らず、数値に基づいた意思決定を仕組み化する</p>
+      </div>
+      <div class="solution-item">
+        <h4>🤖 AIによる改善提案</h4>
+        <p>異常検知〜原因分析〜施策案までをAIが自動生成し、初動を早める</p>
+      </div>
+      <div class="solution-item">
+        <h4>🗂️ ナレッジ蓄積</h4>
+        <p>施策と成果を案件横断で蓄積し、成功パターンを組織の資産にする</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 想定ユーザー -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">想定ユーザー</span>
+      <h2>社内メンバーとクライアントで見える範囲を分ける</h2>
+    </div>
+    <div class="user-grid">
+      <div class="user-col">
+        <h4>👥 管理者（フル機能）</h4>
+        <div class="user-tags">
+          <span class="user-tag">社長</span>
+          <span class="user-tag">部長</span>
+          <span class="user-tag">コンサル</span>
+          <span class="user-tag">マーケター</span>
+          <span class="user-tag">SEO担当</span>
+          <span class="user-tag">広告担当</span>
+        </div>
+      </div>
+      <div class="user-col">
+        <h4>🤝 クライアント（閲覧権限）</h4>
+        <div class="user-tags">
+          <span class="user-tag">ダッシュボード閲覧</span>
+          <span class="user-tag">レポート閲覧</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- メニュー構成 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">メニュー構成</span>
+      <h2>全11メニューでPDCAの一連の流れをカバー</h2>
+    </div>
+    <div class="tech-row">
+      <span class="tech-tag">🏠 ホーム</span>
+      <span class="tech-tag">📁 案件一覧</span>
+      <span class="tech-tag">📊 ダッシュボード</span>
+      <span class="tech-tag">🔍 分析</span>
+      <span class="tech-tag">💡 改善提案</span>
+      <span class="tech-tag">🎯 施策管理</span>
+      <span class="tech-tag">✅ タスク</span>
+      <span class="tech-tag">📄 レポート</span>
+      <span class="tech-tag">💬 AIチャット</span>
+      <span class="tech-tag">⚙️ 設定</span>
+    </div>
+  </div>
+
+  <!-- 画面イメージ①：ダッシュボード -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">画面イメージ①</span>
+      <h2>経営ダッシュボード｜KPIとAI健康診断を一目で</h2>
+    </div>
+    <p>売上・CV・CVR・CPA・ROASなどのKPIカードに加え、SEO・広告・CVR・SNS・CRMを100点満点でスコア化する「AI健康診断」で、施策全体の健康状態を直感的に把握できます。</p>
+    <div class="mock-window">
+      <div class="mock-chrome"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">dashboard.ai-pdca.jp</span></div>
+      <div class="mock-body">
+        <div class="mock-label">KPIカード</div>
+        <div class="kpi-row">
+          <div class="kpi-card"><div class="kpi-name">売上</div><div class="kpi-val">¥13.4M<span class="kpi-diff kpi-up">↑12%</span></div></div>
+          <div class="kpi-card"><div class="kpi-name">CV数</div><div class="kpi-val">482<span class="kpi-diff kpi-up">↑6%</span></div></div>
+          <div class="kpi-card"><div class="kpi-name">CVR</div><div class="kpi-val">2.1%<span class="kpi-diff kpi-down">↓8%</span></div></div>
+          <div class="kpi-card"><div class="kpi-name">CPA</div><div class="kpi-val">¥4,820<span class="kpi-diff kpi-up">↑3%</span></div></div>
+          <div class="kpi-card"><div class="kpi-name">ROAS</div><div class="kpi-val">312%<span class="kpi-diff kpi-up">↑5%</span></div></div>
+        </div>
+        <div class="mock-label">AI健康診断</div>
+        <div class="health-row">
+          <div class="health-card"><div class="health-name">SEO</div><div class="health-score health-good">92</div></div>
+          <div class="health-card"><div class="health-name">広告</div><div class="health-score health-good">81</div></div>
+          <div class="health-card"><div class="health-name">CVR</div><div class="health-score health-mid">68</div></div>
+          <div class="health-card"><div class="health-name">SNS</div><div class="health-score health-mid">74</div></div>
+          <div class="health-card"><div class="health-name">CRM</div><div class="health-score health-good">95</div></div>
+        </div>
+        <div class="mock-label">AIコメント</div>
+        <div class="ai-comment-box">
+          <span class="ai-tag">🤖 今月の課題</span>
+          CVRが低下しています。原因はフォーム離脱率の増加。まずはCTA改善を優先することをおすすめします。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画面イメージ②：分析 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">画面イメージ②</span>
+      <h2>分析画面｜SEO・広告・GA4・CRM・SNSをタブ切替</h2>
+    </div>
+    <p>チャネルごとに分かれていたデータをタブ1つで横断確認。SEOは順位・クリック・内部リンク・リライト候補、広告は媒体別CPA/ROAS/CVなど、実務でそのまま使える粒度で表示します。</p>
+    <div class="mock-window">
+      <div class="mock-chrome"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">dashboard.ai-pdca.jp/analysis</span></div>
+      <div class="mock-body">
+        <div class="tab-row">
+          <span class="tab-item active">SEO</span>
+          <span class="tab-item">広告</span>
+          <span class="tab-item">GA4</span>
+          <span class="tab-item">CRM</span>
+          <span class="tab-item">SNS</span>
+          <span class="tab-item">メール</span>
+        </div>
+        <div class="mock-label">SEO：表示 / 順位 / クリック / CTR / 流入 / 内部リンク / リライト候補</div>
+        <div class="ai-comment-box">
+          <span class="ai-tag">🔍 AI分析結果</span>
+          CVRが8%低下。原因候補は「広告CTR低下」「LP速度悪化」「フォーム離脱」の3つ。優先度 <span class="star">★★★★★</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画面イメージ③：Action管理 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">画面イメージ③</span>
+      <h2>Action管理｜改善提案を優先度順にリスト化</h2>
+    </div>
+    <p>AIが生成した改善提案を「期待効果」「工数」とあわせて一覧化。優先度の高い施策から着手できるため、意思決定のスピードが上がります。</p>
+    <div class="mock-window">
+      <div class="mock-chrome"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">dashboard.ai-pdca.jp/action</span></div>
+      <div class="mock-body">
+        <table class="priority-table">
+          <thead><tr><th>優先度</th><th>施策</th><th>期待効果</th><th>工数</th></tr></thead>
+          <tbody>
+            <tr><td class="star">★★★★★</td><td>CTA改善</td><td>CV +8%</td><td>2h</td></tr>
+            <tr><td class="star">★★★★★</td><td>記事追加</td><td>SEO +15%</td><td>6h</td></tr>
+            <tr><td class="star">★★★★☆</td><td>広告改善</td><td>CPA -12%</td><td>3h</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画面イメージ④：タスク管理 / AIチャット -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">画面イメージ④</span>
+      <h2>タスク管理 & AIチャット｜施策を実行につなげる</h2>
+    </div>
+    <p>採用した改善案はワンクリックでタスク化。かんばん形式で進捗管理し、Asana・ClickUpなど既存ツールとも連携可能です。AIチャットでは「今月CVRが落ちた理由は？」のような質問にもその場で回答します。</p>
+    <div class="mock-window">
+      <div class="mock-chrome"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">dashboard.ai-pdca.jp/tasks</span></div>
+      <div class="mock-body">
+        <div class="kanban-row">
+          <div class="kanban-col"><div class="kanban-col-title">未着手</div><div class="kanban-card">広告改善案の作成</div></div>
+          <div class="kanban-col"><div class="kanban-col-title">進行中</div><div class="kanban-card">CTA改善（LP）</div></div>
+          <div class="kanban-col"><div class="kanban-col-title">レビュー</div><div class="kanban-card">記事追加（3本）</div></div>
+          <div class="kanban-col"><div class="kanban-col-title">完了</div><div class="kanban-card">フォーム項目削減</div></div>
+        </div>
+        <div class="mock-label">AIチャット</div>
+        <div class="chat-row">
+          <div class="chat-bubble chat-user">今月CVRが落ちた理由は？</div>
+          <div class="chat-bubble chat-ai">主な要因は「広告CTR低下」「SEO流入減少」「フォーム離脱」の3つです。特にフォーム離脱率が先月比+4pt上昇しており、影響が最も大きいと考えられます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 画面イメージ⑤：レポート -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">画面イメージ⑤</span>
+      <h2>レポート出力｜役員報告までワンクリック</h2>
+    </div>
+    <p>月次・週次・役員向けレポートをPDF / PowerPoint / Excelで出力。AIが要点をまとめるため、報告資料の作成時間を削減できます。</p>
+    <div class="report-row">
+      <div class="report-chip">月次レポート<span>PDF / PPT / Excel</span></div>
+      <div class="report-chip">週次レポート<span>PDF / PPT / Excel</span></div>
+      <div class="report-chip">役員レポート<span>PDF / PPT / Excel</span></div>
+    </div>
+  </div>
+
+  <!-- AI機能一覧 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">AI機能</span>
+      <h2>分析から資料作成まで、AIが一貫してサポート</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-item"><div class="feature-icon">📝</div><div class="feature-title">AI要約</div><div class="feature-desc">データや施策内容を短時間で要約</div></div>
+      <div class="feature-item"><div class="feature-icon">🔍</div><div class="feature-title">AI分析</div><div class="feature-desc">異常検知・原因分析を自動実行</div></div>
+      <div class="feature-item"><div class="feature-icon">💡</div><div class="feature-title">AI改善提案</div><div class="feature-desc">優先度付きの施策案を自動生成</div></div>
+      <div class="feature-item"><div class="feature-icon">📄</div><div class="feature-title">AIレポート</div><div class="feature-desc">月次・週次・役員報告を自動作成</div></div>
+      <div class="feature-item"><div class="feature-icon">🎙️</div><div class="feature-title">AI議事録</div><div class="feature-desc">打ち合わせ内容を自動で記録・整理</div></div>
+      <div class="feature-item"><div class="feature-icon">🎯</div><div class="feature-title">AI施策作成</div><div class="feature-desc">目的から具体的な施策案を提案</div></div>
+      <div class="feature-item"><div class="feature-icon">👤</div><div class="feature-title">AIペルソナ</div><div class="feature-desc">ターゲット像を自動で言語化</div></div>
+      <div class="feature-item"><div class="feature-icon">🏢</div><div class="feature-title">AI競合分析</div><div class="feature-desc">競合の動向・強みを自動比較</div></div>
+      <div class="feature-item"><div class="feature-icon">🗺️</div><div class="feature-title">AIロードマップ</div><div class="feature-desc">中長期の施策計画を自動生成</div></div>
+    </div>
+  </div>
+
+  <!-- 外部連携・権限・通知 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">外部連携・権限・通知</span>
+      <h2>既存の運用環境をそのまま活かせる</h2>
+    </div>
+    <p style="margin-bottom:8px"><strong>外部連携：</strong></p>
+    <div class="tech-row" style="margin-top:0">
+      <span class="tech-tag">GA4</span>
+      <span class="tech-tag">Search Console</span>
+      <span class="tech-tag">Google Ads</span>
+      <span class="tech-tag">Meta</span>
+      <span class="tech-tag">LINE</span>
+      <span class="tech-tag">HubSpot</span>
+      <span class="tech-tag">Salesforce</span>
+      <span class="tech-tag">Looker Studio</span>
+      <span class="tech-tag">Google Sheets</span>
+    </div>
+    <p style="margin:18px 0 8px"><strong>権限：</strong>管理者 / 案件責任者 / 担当者 / 閲覧のみ の4段階</p>
+    <p style="margin-bottom:8px"><strong>通知：</strong>KPI悪化・期限超過・施策完了・AI改善提案・週次レポートを メール / Teams / Slack へ配信</p>
+  </div>
+
+  <!-- 将来的な差別化 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">差別化ポイント</span>
+      <h2>「分析ツール」で終わらせない2つの仕掛け</h2>
+    </div>
+    <p>一般的なマーケティングダッシュボードでも分析・可視化は実現できます。競合と差別化するには、次の2つを最初から設計に組み込むことをおすすめします。</p>
+
+    <div class="mock-label" style="margin-top:8px">① AI PDCAループ（自動サイクル）</div>
+    <div class="arch-flow">
+      <div class="arch-node">📝<br>Plan作成</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🚀<br>施策実行</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📊<br>結果収集<br>GA4/広告/SEO</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🤖<br>AI分析</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">💡<br>改善提案</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">✅<br>タスク<br>自動作成</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📄<br>レビュー資料<br>自動生成</div>
+    </div>
+    <p>人が分析結果を見て考えるのではなく、<strong>AIが次のアクションまでつなげる</strong>のがポイントです。</p>
+
+    <div class="mock-label">② ナレッジ学習</div>
+    <p>案件ごとの施策と成果を蓄積し、「どの施策が成功しやすいか」「業界別に有効な打ち手」「過去案件との類似分析」をAIが学習・提案できるようにします。案件をこなすほど提案精度が上がる仕組みです。</p>
+  </div>
+
+  <!-- MVP提案 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">MVP提案</span>
+      <h2>デモで見せるなら、まずこの4画面に絞る</h2>
+    </div>
+    <p>デモで社長に見せるなら、機能を絞るほど伝わりやすくなります。以下の4画面だけでも「分析で終わらず、PDCAを回す仕組み」というコンセプトは十分に伝わり、今後の機能拡張もイメージしてもらいやすくなります。</p>
+    <div class="mvp-box">
+      <div class="mvp-eyebrow">🎯 MVP（最小構成デモ）で作る4画面</div>
+      <div class="mvp-grid">
+        <div class="mvp-item">経営ダッシュボード<span>KPI・健康診断・アラート</span></div>
+        <div class="mvp-item">AI分析<span>原因分析と改善提案</span></div>
+        <div class="mvp-item">Action管理<span>優先順位付き施策</span></div>
+        <div class="mvp-item">PDCA履歴<span>実施施策と成果の蓄積</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h2>分析ツールで終わらせない。<br>AIが次の一手までつなげるPDCA基盤へ。</h2>
+    <p>まずはMVPの4画面から。デモを見ながら、貴社の運用に合わせた拡張範囲をご相談いただけます。</p>
+    <div class="cta-btns">
+      <a href="https://x.com/Marketer_kazuf" target="_blank" class="cta-btn">𝕏 Xでお問い合わせ</a>
+      <a href="index.html" class="cta-btn outline">← 一覧に戻る</a>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← AI業務効率化 実績一覧に戻る</a>
+  </div>
+
+</div>
+
+</body>
+</html>
