@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SEO記事自動化パイプライン｜AIがリサーチから執筆・品質チェックまで全工程を担当</title>
-<meta name="description" content="Perplexityリサーチ→構成案→執筆→ファクトチェック→URL検証→品質チェック→内部リンク設計→Google Docs保存まで、SEO記事作成の全工程をAIが自動実行。1記事の作業工数を約80%削減。">
+<title>AI SEO自動運用ブログシステム｜Claude.ai Webの自動操作で生成から分析・改善まで毎日自動実行</title>
+<meta name="description" content="Playwright経由でClaude.ai Webを自動操作し、SEO記事のリサーチ・執筆・ファクトチェック・品質向上・内部リンク設計から公開、Search Console分析、AIリライトまでを毎日自動実行。APIキー不要・Claude Proサブスクのみで運用。">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -308,16 +308,16 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
 <section class="hero">
   <div class="hero-inner">
     <div class="hero-tag">アプリ④ — SEO自動化</div>
-    <h1>SEO記事自動化<em>パイプライン</em></h1>
+    <h1>AI SEO自動運用<em>ブログシステム</em></h1>
     <p class="hero-sub">
-      Perplexityリサーチ → 構成案 → 執筆 → ファクトチェック → URL検証 → 品質チェック → 内部リンク設計 → Google Docs保存<br>
-      <strong style="color:#fff">AIが7工程を一気通貫で自動実行。1記事の作業工数を約80%削減。</strong>
+      リサーチ → 記事生成 → ファクトチェック → 品質向上 → 内部リンク → 公開 → 検索分析 → 自動リライト<br>
+      <strong style="color:#fff">AIが全工程を毎日自動実行。APIキー不要・Claude Proサブスクのみで運用。</strong>
     </p>
     <div class="hero-badges">
-      <span class="hero-badge">🤖 Claude API / Claude Code</span>
-      <span class="hero-badge">⚡ FastAPI + Next.js</span>
-      <span class="hero-badge">🔍 Perplexity連携</span>
-      <span class="hero-badge">📄 Google Docs自動保存</span>
+      <span class="hero-badge">🤖 Claude.ai Web（Playwright自動操作）</span>
+      <span class="hero-badge">🚀 Astro + Cloudflare Pages</span>
+      <span class="hero-badge">⏰ GitHub Actions 毎日自動実行</span>
+      <span class="hero-badge">📊 Search Console API連携</span>
     </div>
   </div>
 </section>
@@ -327,26 +327,26 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
   <!-- 課題と解決 -->
   <div class="section-block">
     <div class="section-label">CHALLENGE / SOLUTION</div>
-    <h2>SEO記事制作、こんなお悩みはありませんか？</h2>
+    <h2>SEOブログ運用、こんなお悩みはありませんか？</h2>
     <div class="cs-grid">
       <div class="cs-box challenge">
         <div class="cs-label">Before — 従来の課題</div>
         <ul class="cs-list">
-          <li>キーワード調査・競合調査・構成案・執筆・校正…工程が多すぎる</li>
-          <li>ライターごとに品質がバラバラ</li>
-          <li>ファクトチェックや内部リンクのチェックを手動でやると漏れる</li>
-          <li>1記事あたりの制作時間が長く、本数を増やせない</li>
-          <li>AIを使っても、各工程をつなぐ作業が手間</li>
+          <li>記事を書いても、公開後の分析・改善まで手が回らない</li>
+          <li>担当者ごとに記事の品質・トーンがバラバラ</li>
+          <li>ファクトチェックや内部リンク設計を手動でやると漏れる</li>
+          <li>Search Consoleのデータを見ても、どの記事をどう直すべきか判断に時間がかかる</li>
+          <li>API従量課金だと、記事を量産するほどコストが膨らむ</li>
         </ul>
       </div>
       <div class="cs-box solution">
         <div class="cs-label">After — このツールの解決策</div>
         <ul class="cs-list">
-          <li>Perplexityリサーチから執筆まで7工程をAIが自動実行</li>
-          <li>プロンプト設計で品質が均一化・ムラがなくなる</li>
-          <li>ファクトチェック・URLの生死確認・内部リンク設計も自動</li>
-          <li>1記事の作業工数を<strong>約80%削減</strong></li>
-          <li>FastAPI + Next.jsのWebアプリで操作はブラウザから</li>
+          <li>リサーチから内部リンク設計まで5工程をAIが自動実行</li>
+          <li>プロンプト設計で品質・トーンを均一化</li>
+          <li>ファクトチェック・内部リンク設計も自動</li>
+          <li>Search Console連携で「どの記事を」「なぜ」直すべきかをAIが自動判断・自動リライト</li>
+          <li>Claude Proサブスクのみで運用、API従量課金なし</li>
         </ul>
       </div>
     </div>
@@ -358,102 +358,115 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
     <h2>4つの主要機能</h2>
     <div class="feature-grid">
       <div class="feature-card">
-        <div class="icon">🔍</div>
-        <div class="name">Perplexity連携リサーチ</div>
-        <div class="desc">最新情報をリアルタイム検索。AIが自動でリサーチ結果を構造化してフォームに渡す</div>
+        <div class="icon">🤖</div>
+        <div class="name">Claude.ai Web自動操作</div>
+        <div class="desc">Playwrightがブラウザを直接操作し、Claude.aiのチャットUIでプロンプトを実行。APIキー不要でClaude Proのセッションをそのまま利用</div>
       </div>
       <div class="feature-card">
         <div class="icon">✍️</div>
-        <div class="name">構成案 + 記事執筆</div>
-        <div class="desc">SEOに最適化された構成を自動生成し、そのまま本文執筆まで一気に実行</div>
+        <div class="name">5ステップ記事生成</div>
+        <div class="desc">リサーチ→記事生成→ファクトチェック→品質向上→内部リンクの5工程を同一会話でコンテキストを引き継ぎながら自動実行</div>
       </div>
       <div class="feature-card">
-        <div class="icon">✅</div>
-        <div class="name">ファクトチェック + URL検証</div>
-        <div class="desc">記事内の事実情報を再検証。URLの生死確認・リンク切れを自動で検出・置換</div>
+        <div class="icon">📊</div>
+        <div class="name">Search Console自動分析</div>
+        <div class="desc">公開済み記事の検索パフォーマンスをGSC APIで毎日取得し、順位・CTR低下などの異常を検知</div>
       </div>
       <div class="feature-card">
-        <div class="icon">🔗</div>
-        <div class="name">内部リンク設計 + 保存</div>
-        <div class="desc">関連記事への内部リンクを自動設計。最終成果物をGoogle Docsに自動保存</div>
+        <div class="icon">🔁</div>
+        <div class="name">AI自動リライト</div>
+        <div class="desc">分析結果をもとに、改善が必要な記事をAIが自動でリライトして再公開</div>
       </div>
     </div>
   </div>
 
-  <!-- スクリーンショット -->
+  <!-- 運用中のブログ -->
   <div class="section-block">
-    <div class="section-label">SCREENSHOT</div>
-    <h2>ツール画面</h2>
-    <p>左パネルで入力・実行制御、右パネルでリアルタイムに進捗とAI出力を確認できます。Prompt B〜Eの処理状況がステップバーで一目でわかります。</p>
-    <div style="margin:24px 0;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid #e5e7eb">
-      <img src="seo-pipeline-screen.png" alt="SEO記事自動化パイプライン — ツール画面" style="width:100%;display:block">
-    </div>
-    <p style="font-size:13px;color:#6b7280;margin-top:-8px;text-align:center">▲ Prompt Cのファクトチェック実行中の状態。左：入力フォーム・実行制御 / 右：進捗ステップバーと現在の出力</p>
+    <div class="section-label">LIVE</div>
+    <h2>実際に毎日自動運用中のブログ</h2>
+    <p>管理画面や操作アプリはなく、GitHub Actionsが毎朝ブラウザを起動してClaude.aiを操作し、記事の生成・公開・分析・改善までを完全無人で行います。生成された記事は実際に下記のブログで公開されています。</p>
+    <a href="https://fkdkazu-commits.github.io/ai-seo-blog/" target="_blank" class="cta-btn" style="background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;display:inline-block">🔗 運用中のブログを見る →</a>
   </div>
 
-  <!-- 7ステップフロー -->
+  <!-- 5ステップフロー -->
   <div class="section-block">
     <div class="section-label">PROCESS</div>
-    <h2>7工程の自動化フロー</h2>
-    <p>Prompt A〜Eの5種類のプロンプトが7工程を自動実行します。各ステップの処理状況はリアルタイムで画面に表示されます。</p>
+    <h2>5工程の記事生成フロー</h2>
+    <p>Playwrightが起動したブラウザ内で、同一のClaude.aiチャットセッションを使い回しながら5工程を自動実行します。各ステップの出力は次のステップにそのまま引き継がれます。</p>
     <div class="flow-wrap">
       <div class="flow-steps">
         <div class="flow-step">
           <div class="step-num">1</div>
           <div class="step-content">
-            <div class="step-title">Perplexityでリサーチ</div>
-            <div class="step-desc">キーワードをもとにPerplexityが最新情報を検索・収集。競合記事・トレンド・引用元URLを取得します。</div>
-            <span class="step-tool">Prompt A</span>
+            <div class="step-title">Claude.ai Webへ接続</div>
+            <div class="step-desc">永続ブラウザプロファイルでログイン状態を保持。初回のみ手動ログインが必要で、以降は自動接続されます。</div>
+            <span class="step-tool">Playwright</span>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">2</div>
           <div class="step-content">
-            <div class="step-title">リサーチ結果をフォームに貼り付け</div>
-            <div class="step-desc">Perplexityの出力結果をWebアプリのフォームに貼り付け。以降の工程は自動実行されます。</div>
-            <span class="step-tool">手動（ここだけ）</span>
+            <div class="step-title">リサーチ</div>
+            <div class="step-desc">対象キーワードの検索意図・競合記事・関連データをAIが調査し、レポートとして出力します。</div>
+            <span class="step-tool">STEP 1</span>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">3</div>
           <div class="step-content">
-            <div class="step-title">記事構成案の作成 + 執筆</div>
-            <div class="step-desc">SEOに最適な見出し構成を生成し、そのまま本文執筆まで一気に完了。文字数・トーン・構成はカスタマイズ可能。</div>
-            <span class="step-tool">Prompt B</span>
+            <div class="step-title">記事生成</div>
+            <div class="step-desc">リサーチ結果をもとに、構成案から本文（8,000字以上）までを一括で執筆します。</div>
+            <span class="step-tool">STEP 2</span>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">4</div>
           <div class="step-content">
             <div class="step-title">ファクトチェック</div>
-            <div class="step-desc">執筆した記事内の事実情報（数字・固有名詞・統計）を再検証。不確かな情報を検出してフラグを立てます。</div>
-            <span class="step-tool">Prompt C</span>
+            <div class="step-desc">執筆した記事内の事実情報（数字・固有名詞・統計）を再検証し、誤りがあれば修正します。</div>
+            <span class="step-tool">STEP 3</span>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">5</div>
           <div class="step-content">
-            <div class="step-title">URL検証・置換</div>
-            <div class="step-desc">記事内の外部リンクURLにアクセスして生死確認。404などのリンク切れを自動検出し、代替URLに置換します。</div>
-            <span class="step-tool">Prompt C'</span>
+            <div class="step-title">品質向上</div>
+            <div class="step-desc">読みやすさ・SEO観点・構成の論理性を多角的にチェックし、本文をブラッシュアップします。</div>
+            <span class="step-tool">STEP 4</span>
           </div>
         </div>
         <div class="flow-step">
           <div class="step-num">6</div>
           <div class="step-content">
-            <div class="step-title">品質チェック</div>
-            <div class="step-desc">SEO観点・読みやすさ・構成の論理性・キーワード密度などを多角的に評価。改善提案も出力します。</div>
-            <span class="step-tool">Prompt D</span>
+            <div class="step-title">内部リンク設計 → MDX変換・自動公開</div>
+            <div class="step-desc">既存記事のサイトマップをもとに関連記事への内部リンクを自動設計（新規会話でコンテキストをリセットし精度を確保）。完成した記事はMDXに変換され、Cloudflare Pagesへ自動デプロイされます。</div>
+            <span class="step-tool">STEP 5</span>
           </div>
         </div>
-        <div class="flow-step">
-          <div class="step-num">7</div>
-          <div class="step-content">
-            <div class="step-title">内部リンク設計 → Google Docs保存</div>
-            <div class="step-desc">既存の自社記事一覧をもとに最適な内部リンクを設計。完成した記事をGoogle Docsに自動保存、またはダウンロード形式で出力。</div>
-            <span class="step-tool">Prompt E</span>
-          </div>
-        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3つの自動化ワークフロー -->
+  <div class="section-block">
+    <div class="section-label">AUTOMATION</div>
+    <h2>公開後も止まらない。3つの自動化ワークフロー</h2>
+    <p>GitHub Actionsが毎日決まった時刻に起動し、記事を「書いて終わり」にせず、分析・改善までを自動で回し続けます。</p>
+    <div class="effects-grid">
+      <div class="effect-card">
+        <div class="effect-label">AM 5:00</div>
+        <div class="effect-sub" style="font-weight:700;color:#4c1d95;margin-bottom:4px">daily-generate</div>
+        <div class="effect-sub">記事を自動生成・公開</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-label">AM 6:00</div>
+        <div class="effect-sub" style="font-weight:700;color:#4c1d95;margin-bottom:4px">seo-analysis</div>
+        <div class="effect-sub">Search Consoleで検索パフォーマンスを分析</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-label">AM 7:00</div>
+        <div class="effect-sub" style="font-weight:700;color:#4c1d95;margin-bottom:4px">auto-rewrite</div>
+        <div class="effect-sub">分析結果をもとにAIが自動リライト</div>
       </div>
     </div>
   </div>
@@ -464,19 +477,19 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
     <h2>導入効果</h2>
     <div class="effects-grid">
       <div class="effect-card">
-        <div class="effect-num">80<span style="font-size:22px">%</span></div>
-        <div class="effect-label">作業工数削減</div>
-        <div class="effect-sub">1記事あたりの制作時間を大幅短縮</div>
-      </div>
-      <div class="effect-card">
-        <div class="effect-num">7</div>
-        <div class="effect-label">工程を自動実行</div>
-        <div class="effect-sub">リサーチから保存まで一気通貫</div>
-      </div>
-      <div class="effect-card">
         <div class="effect-num">0</div>
-        <div class="effect-label">リンク切れ見落とし</div>
-        <div class="effect-sub">URL検証ステップが自動チェック</div>
+        <div class="effect-label">APIキー・従量課金</div>
+        <div class="effect-sub">Claude Proサブスクのみで運用</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-num">3</div>
+        <div class="effect-label">自動ワークフロー</div>
+        <div class="effect-sub">生成・分析・リライトを毎日自動実行</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-num">5</div>
+        <div class="effect-label">工程を自動実行</div>
+        <div class="effect-sub">リサーチから内部リンク設計まで一気通貫</div>
       </div>
     </div>
   </div>
@@ -486,16 +499,16 @@ p { font-size: 15px; color: #374151; margin-bottom: 16px; }
     <div class="section-label">TECH STACK</div>
     <h2>使用技術・ツール</h2>
     <div class="stack-grid">
-      <span class="stack-tag">🤖 Claude API</span>
-      <span class="stack-tag">⚡ Claude Code</span>
-      <span class="stack-tag">🔍 Perplexity API</span>
-      <span class="stack-tag">🐍 Python / FastAPI</span>
-      <span class="stack-tag">⚛️ Next.js</span>
-      <span class="stack-tag">📄 Google Docs API</span>
-      <span class="stack-tag">🔗 URL検証（httpx）</span>
+      <span class="stack-tag">🤖 Claude.ai Web（Playwright自動操作）</span>
+      <span class="stack-tag">🎭 Playwright</span>
+      <span class="stack-tag">🚀 Astro + MDX</span>
+      <span class="stack-tag">🎨 Tailwind CSS</span>
+      <span class="stack-tag">☁️ Cloudflare Pages</span>
+      <span class="stack-tag">⚙️ GitHub Actions</span>
+      <span class="stack-tag">📊 Google Search Console API</span>
     </div>
     <p style="margin-top:16px;font-size:13px;color:#6b7280">
-      バックエンドはFastAPI（Python）、フロントエンドはNext.jsで構築した本格的なWebアプリです。各工程の処理状況がリアルタイムで画面に反映されます。
+      フロントエンドはAstro + MDX + Tailwind CSSで構築し、Cloudflare Pagesでホスティング。記事生成はPlaywrightがClaude.ai Webを直接操作するためAPIキーは不要です。GitHub Actions（セルフホストランナー）が毎日決まった時刻に各処理を自動実行します。
     </p>
   </div>
 
