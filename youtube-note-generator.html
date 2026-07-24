@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube → note 記事自動生成ツール｜動画の字幕からnote記事を自動生成・自動投稿</title>
+<meta name="description" content="YouTube動画の字幕をClaude AIが記事化し、note.comへ下書き・公開まで自動投稿するツール。単一URL処理・スプレッドシート一括処理・Cowork連携に対応。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #f8fafc;
+  color: #1a1a2e;
+  line-height: 1.8;
+}
+
+.hero {
+  background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 55%, #ef4444 100%);
+  padding: 80px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.12), transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 60px;
+  background: #f8fafc;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-inner { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
+.hero-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.35);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.hero h1 {
+  font-size: clamp(22px, 3.5vw, 40px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.35;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.15);
+}
+.hero h1 em { font-style: normal; color: #fde68a; }
+.hero-sub {
+  font-size: clamp(14px, 1.8vw, 17px);
+  color: rgba(255,255,255,0.88);
+  line-height: 1.9;
+  margin-bottom: 32px;
+}
+.hero-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.container { max-width: 900px; margin: 0 auto; padding: 60px 20px 80px; }
+
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 48px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 40px rgba(185,28,28,0.08);
+  border: 1px solid rgba(239,68,68,0.12);
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #b91c1c, #ef4444) 1;
+}
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  padding: 4px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.card h2 { font-size: clamp(18px, 2vw, 22px); font-weight: 700; color: #1a1a2e; }
+
+p { font-size: 15px; color: #374151; margin-bottom: 14px; line-height: 1.9; }
+strong { color: #b91c1c; font-weight: 700; }
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.pain-item {
+  background: linear-gradient(135deg, #fff5f5, #fce7f3);
+  border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+.pain-icon { font-size: 28px; margin-bottom: 8px; }
+.pain-text { font-size: 13px; font-weight: 600; color: #374151; }
+
+.solution-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.solution-item {
+  background: linear-gradient(135deg, #fff7f7, #fef2f2);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+.solution-item h4 { font-size: 14px; font-weight: 700; color: #b91c1c; margin-bottom: 6px; }
+.solution-item p { font-size: 13px; color: #374151; margin: 0; }
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.feature-item {
+  background: #fafafa;
+  border-radius: 16px;
+  padding: 22px;
+  border: 1px solid rgba(239,68,68,0.15);
+  text-align: center;
+}
+.feature-icon { font-size: 30px; margin-bottom: 10px; }
+.feature-title { font-size: 14px; font-weight: 700; color: #b91c1c; margin-bottom: 6px; }
+.feature-desc { font-size: 12px; color: #6b7280; line-height: 1.6; }
+
+.arch-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 20px 0;
+}
+.arch-node {
+  background: linear-gradient(135deg, #fff7f7, #fef2f2);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #b91c1c;
+  text-align: center;
+  white-space: nowrap;
+}
+.arch-arrow { color: #ef4444; font-size: 18px; font-weight: 700; }
+
+.tech-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.tech-tag {
+  background: linear-gradient(135deg, rgba(185,28,28,0.08), rgba(239,68,68,0.08));
+  border: 1px solid rgba(239,68,68,0.3);
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.phase-item {
+  background: #fafafa;
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 14px;
+  padding: 18px 14px;
+}
+.phase-num { font-size: 11px; font-weight: 700; color: #ef4444; letter-spacing: 0.06em; margin-bottom: 6px; }
+.phase-title { font-size: 13px; font-weight: 700; color: #7f1d1d; margin-bottom: 4px; }
+.phase-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+
+.cta-card {
+  background: linear-gradient(135deg, #7f1d1d, #b91c1c);
+  border-radius: 24px;
+  padding: 48px 40px;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 32px;
+}
+.cta-card h2 { font-size: 22px; font-weight: 900; margin-bottom: 12px; color: #fff; }
+.cta-card p { color: rgba(255,255,255,0.85); margin-bottom: 28px; }
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.cta-btn {
+  display: inline-block;
+  background: #fff;
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+.cta-btn.outline {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.4);
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 24px;
+}
+.back-link a {
+  color: #b91c1c;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .container { padding: 32px 16px 60px; }
+  .card { padding: 24px 16px; }
+  .hero { padding: 48px 16px 80px; }
+  .pain-grid, .solution-grid, .feature-grid, .phase-grid { grid-template-columns: 1fr; }
+  .cta-btns { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">🆕 AIコンテンツ自動化ツール</div>
+    <h1>YouTube動画を、<em>note記事</em>に。<br>字幕から自動で書き起こす記事生成ツール</h1>
+    <p class="hero-sub">
+      動画URLを渡すだけでClaude AIが記事化し<br>
+      note.comへの下書き・タグ付き公開まで自動化
+    </p>
+    <div class="hero-badges">
+      <span class="hero-badge">🎙️ 字幕・タイトル自動取得</span>
+      <span class="hero-badge">🤖 Claude CLIで記事生成</span>
+      <span class="hero-badge">📤 note.com 自動投稿（Playwright）</span>
+      <span class="hero-badge">📊 スプレッドシート一括処理</span>
+      <span class="hero-badge">🔗 Cowork連携対応</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 課題 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">課題</span>
+      <h2>動画資産をブログ化する作業の手間</h2>
+    </div>
+    <p>YouTube動画で話した内容をnoteなどのブログ記事にも展開したいものの、<strong>文字起こし・構成整理・執筆・投稿</strong>を毎回手作業で行うのは大きな負担です。動画を出すたびに記事化が後回しになりがちでした。</p>
+    <div class="pain-grid">
+      <div class="pain-item">
+        <div class="pain-icon">📝</div>
+        <div class="pain-text">文字起こし〜執筆に毎回時間がかかる</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🔁</div>
+        <div class="pain-text">複数動画をまとめて処理できない</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🖊️</div>
+        <div class="pain-text">note投稿までの一手間が地味に面倒</div>
+      </div>
+      <div class="pain-item">
+        <div class="pain-icon">🏷️</div>
+        <div class="pain-text">タグ付け・公開設定を毎回手動で調整</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解決策 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">解決策</span>
+      <h2>URLを渡すだけで記事生成〜投稿まで自動化</h2>
+    </div>
+    <p>YouTube動画の字幕・タイトルを取得し、Claude CLIで記事を自動生成。Playwrightがnote.comを自動操作し、下書き保存・タグ付き公開まで人手を介さずに完了します。</p>
+    <div class="solution-grid">
+      <div class="solution-item">
+        <h4>🎙️ 字幕・タイトル自動取得</h4>
+        <p>YouTube動画のURLから字幕とタイトルを自動取得。手動の文字起こしは不要です。</p>
+      </div>
+      <div class="solution-item">
+        <h4>🤖 Claude CLIで記事生成</h4>
+        <p>APIキー不要・Claude Codeのサブスクリプションのみで記事を自動生成します。</p>
+      </div>
+      <div class="solution-item">
+        <h4>📤 note.com 自動投稿</h4>
+        <p>Playwrightがnote.comを自動操作し下書き保存。公開設定時はタグ付けまで自動で行います。</p>
+      </div>
+      <div class="solution-item">
+        <h4>📊 バッチ処理対応</h4>
+        <p>Google Sheetsに動画URLを並べておくだけで、未処理分をまとめて一括処理できます。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 処理フロー -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">処理フロー</span>
+      <h2>URL入力からnote投稿までの自動フロー</h2>
+    </div>
+    <div class="arch-flow">
+      <div class="arch-node">▶️<br>YouTube<br>URL入力</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📝<br>字幕・タイトル<br>自動取得</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🤖<br>Claude CLI<br>記事生成</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">💾<br>Markdown<br>保存</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">🖥️ Playwright<br>note.com<br>自動操作</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">📤<br>下書き保存 /<br>タグ付き公開</div>
+    </div>
+
+    <p style="margin-top:16px">単一URLでの記事生成のみ、記事生成＋note投稿、スプレッドシート一括処理（＋投稿）の3パターンをコマンド一つで切り替えられます。<strong>Claude CLI（APIキー不要）</strong>で動作するため、従量課金なしでご利用いただけます。</p>
+
+    <div style="background:#fafafa;border:1px solid rgba(239,68,68,0.25);border-radius:14px;padding:14px 18px;margin-top:16px">
+      <div style="font-size:13px;font-weight:700;color:#7f1d1d;margin-bottom:6px">🏷️ 公開設定とタグ付けの仕様</div>
+      <div style="font-size:13px;color:#374151;line-height:1.8">
+        スプレッドシートの公開設定列に「公開」と入力した行のみ、タグを設定したうえで実際に公開投稿します。
+        note.comの仕様上タグは下書き保存には反映できないため、空欄の行は従来どおり下書き保存のみに留めています。
+      </div>
+    </div>
+
+    <div class="tech-row">
+      <span class="tech-tag">Python</span>
+      <span class="tech-tag">YouTube 字幕・タイトル取得</span>
+      <span class="tech-tag">Claude CLI (claude --bare -p)</span>
+      <span class="tech-tag">Playwright（note.com自動操作）</span>
+      <span class="tech-tag">Google Sheets API</span>
+    </div>
+  </div>
+
+  <!-- 主な機能 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">主な機能</span>
+      <h2>単発利用から日常運用まで対応</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-icon">▶️</div>
+        <div class="feature-title">単一URL処理</div>
+        <div class="feature-desc">1本の動画URLを渡すだけで記事生成・投稿を実行</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">バッチ一括処理</div>
+        <div class="feature-desc">スプレッドシート上の未処理URLをまとめて処理</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🏷️</div>
+        <div class="feature-title">下書き / 公開の使い分け</div>
+        <div class="feature-desc">公開設定に応じてタグ付き公開と下書き保存を自動切替</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔗</div>
+        <div class="feature-title">Cowork連携</div>
+        <div class="feature-desc">ローカルランナーサーバー経由でClaude Desktopから起動可能</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔑</div>
+        <div class="feature-title">認証情報のセキュア管理</div>
+        <div class="feature-desc">note.comセッション・サービスアカウントは専用シークレットフォルダで管理</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💾</div>
+        <div class="feature-title">Markdown出力</div>
+        <div class="feature-desc">生成した記事はMarkdownとしても保存され、あとから編集・再利用が可能</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cowork連携 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">Cowork連携</span>
+      <h2>Claude Desktopからワンクリックで実行</h2>
+    </div>
+    <p>ローカルランナーサーバー（専用ポートで待機）を経由することで、<strong>Claude Desktop（Cowork）から直接バッチ処理を起動</strong>できます。ターミナル操作に慣れていない方でも、日常的な記事化フローに組み込みやすい構成です。</p>
+    <div class="phase-grid">
+      <div class="phase-item">
+        <div class="phase-num">STEP 1</div>
+        <div class="phase-title">ランナー起動</div>
+        <div class="phase-desc">ローカルランナーサーバーを起動し待機状態にする</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">STEP 2</div>
+        <div class="phase-title">Coworkから実行指示</div>
+        <div class="phase-desc">Claude Desktopからスプレッドシートを指定して実行を依頼</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-num">STEP 3</div>
+        <div class="phase-title">自動生成・投稿</div>
+        <div class="phase-desc">記事生成からnote投稿までバックグラウンドで完了</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 投稿先の拡張性 -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-badge">投稿先の拡張性</span>
+      <h2>note以外にWordPressへの投稿にも対応可能</h2>
+    </div>
+    <p>本ツールはnote.comへの自動投稿を標準構成としていますが、<strong>WordPressサイトへの自動投稿にも対応可能</strong>です。REST API経由での下書き・公開投稿に切り替えることで、自社ブログ・オウンドメディアなどnote以外の運用先にも組み込めます。ご要望に応じてカスタマイズいたします。</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h2>動画資産を、記事という資産にも変える。</h2>
+    <p>YouTubeで話した内容を、手間なくnote記事として展開できます。</p>
+    <div class="cta-btns">
+      <a href="index.html" class="cta-btn">← 一覧に戻る</a>
+    </div>
+  </div>
+
+  <div class="back-link">
+    <a href="index.html">← AI業務効率化 実績一覧に戻る</a>
+  </div>
+
+</div>
+
+</body>
+</html>
