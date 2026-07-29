@@ -613,6 +613,34 @@ strong { color: #2563a8; font-weight: 700; }
         <div class="screen-desc">外出先からの活動入力・顧客参照を想定した画面</div>
       </div>
     </div>
+    <div class="sample-section-title">実際のモック画面</div>
+    <p>画像をクリックすると拡大表示されます。</p>
+    <div class="sample-grid">
+      <div class="sample-card">
+        <img src="salesforce-crm-home.png" alt="Salesforce CRM モック — ホーム画面。今月の活動件数・進行中の商談・未対応の問い合わせ・受注金額のKPIと、本日のToDo、今週の予定、最近参照した取引先を表示">
+        <div class="sample-label">① ホーム — KPI・本日のToDo・今週の予定・Sansan連携</div>
+      </div>
+      <div class="sample-card">
+        <img src="salesforce-crm-account.png" alt="Salesforce CRM モック — 顧客詳細画面。取引先情報のタブと活動履歴のタイムライン">
+        <div class="sample-label">② 顧客詳細 — 詳細／関連／ニュースのタブと活動履歴</div>
+      </div>
+      <div class="sample-card">
+        <img src="salesforce-crm-activity.png" alt="Salesforce CRM モック — 活動の新規登録モーダル。活動種別に応じて入力項目が切り替わる">
+        <div class="sample-label">③ 活動入力 — 種別ごとに項目を出し分け（Flow の画面フロー）</div>
+      </div>
+      <div class="sample-card">
+        <img src="salesforce-crm-inventory.png" alt="Salesforce CRM モック — 在庫検索画面。商品・倉庫・在庫数量による検索と結果一覧">
+        <div class="sample-label">④ 在庫検索 — 基幹システム連携データを営業が自分で確認</div>
+      </div>
+      <div class="sample-card">
+        <img src="salesforce-crm-reports.png" alt="Salesforce CRM モック — 営業活動ダッシュボード。月別活動件数、活動種別の構成比、担当者別活動件数、顧客別売上">
+        <div class="sample-label">⑤ ダッシュボード — 活動量・構成比・担当者別・顧客別売上</div>
+      </div>
+      <div class="sample-card">
+        <img src="salesforce-crm-mobile.png" alt="Salesforce CRM モック — モバイル画面。ホーム、在庫検索、活動登録の3画面">
+        <div class="sample-label">⑥ モバイル — 外出先での在庫確認・活動登録を想定</div>
+      </div>
+    </div>
     <div class="note-box">
       <p>※ モック内の企業名・担当者名・商品コード・数値はすべて架空のサンプルデータです。SLDS をローカルに同梱しているため、インターネット接続なしで動作します。ヘッダーのロゴは実在企業の商標を素材として使用しない方針から、テキスト表記としています。</p>
     </div>
@@ -678,5 +706,36 @@ strong { color: #2563a8; font-weight: 700; }
 
 </div>
 
+<!-- ライトボックス -->
+<div id="lightbox">
+  <span id="lightbox-close">✕</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+(function() {
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbClose = document.getElementById('lightbox-close');
+
+  document.querySelectorAll('.sample-card img').forEach(function(img) {
+    img.addEventListener('click', function() {
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lb.addEventListener('click', function(e) { if (e.target === lb) close(); });
+  lbClose.addEventListener('click', close);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') close(); });
+})();
+</script>
 </body>
 </html>
